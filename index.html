@@ -1,0 +1,3031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book of Contests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Spectral:wght@400;500;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1b1712;
+    --panel: #241f18;
+    --panel-2: #2c261d;
+    --parchment: #e9dfc4;
+    --parchment-dim: #b8ab86;
+    --blood: #8a2418;
+    --blood-bright: #b3311f;
+    --green: #3e5c2c;
+    --green-bright: #7ba449;
+    --brass: #b98f45;
+    --brass-dim: #7c6535;
+    --line: rgba(185,143,69,0.28);
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(138,36,24,0.10), transparent 55%),
+      radial-gradient(ellipse at 85% 110%, rgba(185,143,69,0.08), transparent 50%),
+      var(--ink);
+    color: var(--parchment);
+    font-family: 'Spectral', serif;
+    min-height: 100vh;
+  }
+
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  header.hero{
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+
+  .hero-mark{
+    font-family: 'Roboto Slab', serif;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--brass);
+    margin: 0 0 10px;
+  }
+
+  h1{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(38px, 6vw, 58px);
+    line-height: 1.02;
+    margin: 0 0 14px;
+    color: var(--parchment);
+  }
+
+  .hero p{
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--parchment-dim);
+    max-width: 68ch;
+    margin: 0;
+  }
+
+  /* ---- Teams layout ---- */
+  .teams{
+    display: grid;
+    grid-template-columns: 1fr 84px 1fr;
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 780px){
+    .teams{ grid-template-columns: 1fr; }
+    .vs-col{ flex-direction: row; justify-content:center; padding: 10px 0; }
+    .vs-rule{ display:none; }
+  }
+
+  .team-col{
+    display:flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .team-col.right{ align-items: stretch; }
+
+  .team-name-input{
+    width:100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--brass-dim);
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 26px;
+    padding: 2px 0 8px;
+  }
+  .team-col.right .team-name-input{ text-align: right; }
+  .team-name-input:focus{ outline: none; border-bottom-color: var(--brass); }
+
+  .roster{
+    display:flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .member-card{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line);
+    padding: 18px 18px 16px;
+    position: relative;
+  }
+
+  .member-card::before{
+    content:"";
+    position:absolute; inset: 5px;
+    border: 1px solid rgba(185,143,69,0.14);
+    pointer-events:none;
+  }
+
+  .member-top{
+    display:flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .team-col.right .member-top{ flex-direction: row-reverse; }
+
+  .member-name-input{
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--brass-dim);
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 20px;
+    padding: 2px 0 6px;
+  }
+  .team-col.right .member-name-input{ text-align: right; }
+  .member-name-input:focus{ outline: none; border-bottom-color: var(--brass); }
+
+  .remove-btn{
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--blood);
+    color: var(--blood-bright);
+    font-family: 'Roboto Slab', serif;
+    font-size: 12px;
+    padding: 6px 10px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .remove-btn:hover:not(:disabled){ background: var(--blood); color: var(--parchment); }
+  .remove-btn:disabled{ opacity: 0.3; cursor: not-allowed; }
+
+  .member-fields{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
+  }
+
+  .mini-field{ display:flex; flex-direction: column; gap: 3px; }
+  .mini-field.wide{ grid-column: 1 / -1; }
+  .mini-field label{
+    font-family: 'Roboto Slab', serif;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    color: var(--parchment-dim);
+  }
+  .mini-field input, .mini-field select{
+    width: 100%;
+    background: var(--ink);
+    border: 1px solid var(--line);
+    color: var(--parchment);
+    font-family: 'Roboto Slab', serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 7px;
+  }
+  .mini-field select{ cursor: pointer; }
+  .mini-field input:focus, .mini-field select:focus{ outline: none; border-color: var(--brass); }
+
+  .toughness-note{
+    margin-top: 10px;
+    font-family: 'Roboto Slab', serif;
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    color: var(--parchment-dim);
+  }
+  .toughness-note .tough-armor-readout{
+    color: var(--brass);
+    font-weight: 700;
+  }
+
+  .toggle-stats-btn{
+    margin-top: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--brass-dim);
+    color: var(--parchment-dim);
+    font-family: 'Roboto Slab', serif;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 7px 10px;
+    cursor: pointer;
+  }
+  .toggle-stats-btn:hover{ border-color: var(--brass); color: var(--parchment); }
+
+  .extra-stats{ margin-top: 10px; }
+
+  .actions-btn, .modifiers-btn{
+    margin-top: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--brass-dim);
+    color: var(--parchment-dim);
+    font-family: 'Roboto Slab', serif;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 7px 10px;
+    cursor: pointer;
+  }
+  .actions-btn:hover, .modifiers-btn:hover{ border-color: var(--brass); color: var(--parchment); }
+
+  .actions-modal-backdrop, .modifiers-modal-backdrop{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .actions-modal-backdrop.open, .modifiers-modal-backdrop.open{ display: flex; }
+
+  .actions-modal, .modifiers-modal{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line);
+    width: 100%;
+    max-width: 960px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px 22px 24px;
+  }
+
+  .actions-modal-header, .modifiers-modal-header{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .actions-modal-header h3, .modifiers-modal-header h3{
+    flex: 1;
+    margin: 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--parchment);
+  }
+  .actions-add-btn, .actions-close-btn, .modifiers-add-btn, .modifiers-close-btn{
+    background: transparent;
+    border: 1px solid var(--brass-dim);
+    color: var(--parchment-dim);
+    font-family: 'Roboto Slab', serif;
+    font-size: 14px;
+    padding: 5px 12px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .actions-add-btn:hover, .modifiers-add-btn:hover{ border-color: var(--brass); color: var(--brass); }
+  .actions-close-btn:hover, .modifiers-close-btn:hover{ border-color: var(--blood); color: var(--blood-bright); }
+
+  .actions-list, .modifiers-list{ display: flex; flex-direction: column; gap: 12px; }
+
+  .action-row, .modifier-row{
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--ink);
+    border: 1px solid var(--line);
+    padding: 12px;
+  }
+
+  .action-row-controls, .modifier-row-controls{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .action-row-controls button, .modifier-row-controls button{
+    background: transparent;
+    border: 1px solid var(--brass-dim);
+    color: var(--parchment-dim);
+    font-size: 10px;
+    width: 24px;
+    height: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .action-row-controls .action-remove, .modifier-row-controls .modifier-remove{ border-color: var(--blood); color: var(--blood-bright); }
+  .action-row-controls .action-remove:hover, .modifier-row-controls .modifier-remove:hover{ background: var(--blood); color: var(--parchment); }
+  .action-row-controls button:hover:not(.action-remove), .modifier-row-controls button:hover:not(.modifier-remove){ border-color: var(--brass); color: var(--brass); }
+
+  .action-fields, .modifier-fields{
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px 10px;
+  }
+  .action-fields .mini-field label, .modifier-fields .mini-field label{ white-space: nowrap; }
+  .action-fields .mini-field.hidden, .modifier-fields .mini-field.hidden{ display: none; }
+  .mini-field-pair{
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    grid-column: span 2;
+  }
+  .mini-field-pair .mini-field{ flex: 1; }
+  .mini-field-pair .field-plus{
+    padding-bottom: 8px;
+    font-weight: bold;
+    color: var(--brass);
+  }
+
+  .member-status{
+    display: none;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(185,143,69,0.10);
+  }
+  .member-status.show{ display: block; }
+  .member-status.dead{ opacity: 0.4; }
+  .status-label{
+    display:flex; justify-content: space-between; gap: 8px;
+    font-family: 'Roboto Slab', serif;
+    font-size: 11px;
+    color: var(--parchment-dim);
+    margin-bottom: 5px;
+  }
+  .status-label .status-hp{ color: var(--parchment); font-weight: 700; }
+  .status-badges{
+    display:flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 7px;
+  }
+  .status-badge{
+    font-family: 'Roboto Slab', serif;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    padding: 3px 7px;
+    border: 1px solid var(--blood);
+    color: var(--blood-bright);
+    background: rgba(138,36,24,0.10);
+    white-space: nowrap;
+  }
+
+  .add-member-btn{
+    align-self: flex-start;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    padding: 10px 16px;
+    border: 1px dashed var(--brass-dim);
+    background: transparent;
+    color: var(--brass);
+    cursor: pointer;
+  }
+  .team-col.right .add-member-btn{ align-self: flex-end; }
+  .add-member-btn:hover:not(:disabled){ border-color: var(--brass); color: var(--parchment); background: rgba(185,143,69,0.10); }
+  .add-member-btn:disabled{ opacity: 0.3; cursor: not-allowed; }
+
+  .add-row{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-self: flex-start;
+  }
+  .add-row .add-member-btn{ align-self: auto; }
+
+  .preset-dropdown-wrap{
+    position: relative;
+  }
+  .preset-menu{
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 190px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line);
+    box-shadow: 0 6px 18px var(--shadow);
+    z-index: 20;
+  }
+  .preset-menu.open{ display: flex; }
+  .preset-menu-item{
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(185,143,69,0.10);
+    color: var(--parchment);
+    font-family: 'Roboto Slab', serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .preset-menu-item:last-child{ border-bottom: none; }
+  .preset-menu-item:hover{ background: rgba(185,143,69,0.16); color: var(--brass); }
+  .preset-menu-empty{
+    padding: 10px 14px;
+    color: var(--parchment-dim);
+    font-style: italic;
+    font-size: 12.5px;
+  }
+
+  .vs-col{
+    display:flex; flex-direction:column; align-items:center; justify-content: center;
+    padding-top: 50px;
+  }
+  .vs-glyph{
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 26px;
+    color: var(--brass);
+  }
+  .vs-rule{
+    width:1px; flex:1;
+    background: var(--line);
+    margin-top: 8px;
+    min-height: 40px;
+  }
+
+  .hp-track{
+    width:100%;
+    height: 8px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--line);
+    display: flex;
+  }
+  .hp-fill{
+    height:100%;
+    background: linear-gradient(90deg, var(--green), var(--green-bright));
+    transition: width 0.5s ease;
+  }
+  .hp-damage-fill{
+    height:100%;
+    background: linear-gradient(90deg, var(--blood), var(--blood-bright));
+  }
+
+  /* ---- Controls ---- */
+  .controls{
+    display:flex; flex-wrap:wrap; gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  button{
+    font-family:'Roboto Slab', serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: 0.03em;
+    padding: 13px 22px;
+    border: 1px solid var(--brass-dim);
+    background: transparent;
+    color: var(--parchment);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  button:hover:not(:disabled){
+    background: var(--brass);
+    color: var(--ink);
+    border-color: var(--brass);
+  }
+  button:disabled{ opacity: 0.35; cursor: not-allowed; }
+
+  button.primary{
+    background: var(--blood);
+    border-color: var(--blood);
+    color: var(--parchment);
+  }
+  button.primary:hover:not(:disabled){
+    background: var(--blood-bright);
+    border-color: var(--blood-bright);
+    color: var(--parchment);
+  }
+
+  button.toggle{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  button.toggle .toggle-pill{
+    display:inline-block;
+    width: 30px; height: 16px;
+    border: 1px solid var(--brass-dim);
+    border-radius: 10px;
+    position: relative;
+    background: rgba(0,0,0,0.35);
+    flex-shrink: 0;
+  }
+  button.toggle .toggle-pill::after{
+    content:"";
+    position:absolute;
+    top: 1px; left: 1px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--parchment-dim);
+    transition: left 0.15s ease, background 0.15s ease;
+  }
+  button.toggle.on{
+    border-color: var(--brass);
+    color: var(--parchment);
+    background: rgba(185,143,69,0.14);
+  }
+  button.toggle.on .toggle-pill{ border-color: var(--brass); background: rgba(185,143,69,0.25); }
+  button.toggle.on .toggle-pill::after{ left: 15px; background: var(--brass); }
+  button.toggle.on:hover:not(:disabled){ background: rgba(185,143,69,0.22); color: var(--parchment); border-color: var(--brass); }
+
+  .hp-track.momentum-glow{
+    border-color: var(--brass);
+    box-shadow: 0 0 0 1px var(--brass), 0 0 9px 2px rgba(185,143,69,0.75);
+  }
+
+  /* ---- Arena / round readout ---- */
+  .arena{
+    border: 1px solid var(--line);
+    background: rgba(0,0,0,0.18);
+    padding: 26px 24px;
+    margin-bottom: 30px;
+    min-height: 108px;
+  }
+
+  .arena-empty{
+    color: var(--parchment-dim);
+    font-style: italic;
+    font-size: 15px;
+  }
+
+  .throw-row{
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 18px;
+    align-items:center;
+  }
+  @media (max-width: 720px){ .throw-row{ grid-template-columns: 1fr; } }
+
+  .throw{
+    display:flex; flex-direction: column; gap: 4px;
+  }
+  .throw.right{ align-items: flex-end; text-align:right; }
+
+  .throw .who{
+    font-family:'Roboto Slab', serif;
+    font-size: 12px; letter-spacing:0.05em;
+    color: var(--parchment-dim);
+  }
+  .throw .roll{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:700;
+    font-size: 34px;
+    color: var(--parchment);
+  }
+  .throw .detail{
+    font-family:'Roboto Slab', serif;
+    font-size: 12.5px;
+    color: var(--brass);
+  }
+
+  .throw.loser .roll{ color: var(--parchment-dim); }
+
+  .verdict{
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-family:'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-style: italic;
+    color: var(--parchment);
+  }
+  .verdict b{ font-style: normal; color: var(--blood-bright); }
+
+  .turn-block + .turn-block{
+    margin-top: 26px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--line);
+  }
+  .turn-label{
+    font-family:'Roboto Slab', serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--brass);
+    margin-bottom: 14px;
+  }
+
+  /* ---- Log ---- */
+  h2.section-title{
+    font-family:'Roboto Slab', serif;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    color: var(--brass);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+
+  .log{
+    display:flex; flex-direction: column-reverse;
+    gap: 0;
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+  }
+  .log::-webkit-scrollbar{ width: 8px; }
+  .log::-webkit-scrollbar-thumb{ background: var(--brass-dim); }
+  .log::-webkit-scrollbar-track{ background: rgba(0,0,0,0.2); }
+
+  .log-entry{
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(185,143,69,0.10);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--parchment-dim);
+  }
+  .log-entry:first-child{ border-bottom: none; }
+  .log-entry .round-no{
+    font-family:'Roboto Slab', serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    color: var(--brass);
+    display:block;
+    margin-bottom: 4px;
+  }
+  .log-entry b{ color: var(--parchment); font-weight: 600; }
+  .log-entry.final{
+    background: rgba(138,36,24,0.14);
+    color: var(--parchment);
+  }
+  .log-entry.final b{ color: var(--blood-bright); }
+
+  .log-hp-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 10px;
+  }
+  .log-hp-col{
+    display:flex; flex-direction: column; gap: 8px;
+  }
+  .log-hp-col.right{ align-items: flex-end; }
+  .log-hp{
+    display:flex; flex-direction: column; gap: 4px;
+    width: 100%;
+  }
+  .log-hp.right{ align-items: flex-end; }
+  .log-hp.dead{ opacity: 0.45; }
+  .log-hp .log-hp-label{
+    font-family:'Roboto Slab', serif;
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    color: var(--parchment-dim);
+  }
+  .log-hp .log-hp-label b{ color: var(--brass); font-weight: 600; }
+  .log-hp .hp-track{ height: 6px; }
+
+  /* Separatore tra round: bordo più spesso in cima all'ultimo turno giocato in ogni round */
+  .log-entry.round-end{
+    border-top: 3px solid rgba(185,143,69,0.45);
+    padding-top: 18px;
+    margin-top: 2px;
+  }
+
+  .log-empty{
+    padding: 20px;
+    color: var(--parchment-dim);
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  .modifiers-list-empty{
+    padding: 14px 4px;
+    margin: 0;
+    color: var(--parchment-dim);
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  footer.note{
+    margin-top: 34px;
+    font-size: 13px;
+    color: var(--parchment-dim);
+    line-height: 1.6;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+  }
+
+  footer.note summary{
+    cursor: pointer;
+    list-style: none;
+    font-family: 'Roboto Slab', serif;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--brass);
+    text-transform: uppercase;
+    user-select: none;
+    padding: 2px 0;
+  }
+  footer.note summary::-webkit-details-marker{ display:none; }
+  footer.note summary::before{
+    content: "\25b8";
+    display:inline-block;
+    margin-right: 8px;
+    color: var(--brass);
+    transition: transform 0.15s ease;
+  }
+  footer.note details[open] summary::before{ transform: rotate(90deg); }
+  footer.note summary:hover{ color: var(--parchment); }
+
+  footer.note .footer-content{
+    margin-top: 16px;
+  }
+  footer.note .footer-content p{ margin: 0 0 16px; }
+  footer.note .footer-content p:last-child{ margin-bottom: 0; }
+  footer.note .footer-content b{ color: var(--parchment); font-weight: 600; }
+
+  .status-rules-list{
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .status-rules-list li{ padding-left: 2px; }
+  .status-rules-list b{ color: var(--parchment); }
+  .status-rules-list .stack-tag{
+    display: inline-block;
+    font-family: 'Roboto Slab', serif;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--brass);
+    border: 1px solid var(--brass-dim);
+    padding: 1px 6px;
+    margin-left: 2px;
+    white-space: nowrap;
+  }
+
+  /* ---- Tooltips (On Hit Effect info + status badges) ---- */
+  .tooltip-wrap{
+    position: relative;
+    display: inline-block;
+    cursor: help;
+  }
+  .tooltip-wrap::after{
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--brass-dim);
+    color: var(--parchment);
+    font-family: 'Roboto Slab', serif;
+    font-size: 11.5px;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    line-height: 1.45;
+    padding: 9px 11px;
+    box-shadow: 0 6px 18px var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 60;
+    white-space: normal;
+  }
+  .tooltip-wrap:hover::after,
+  .tooltip-wrap:focus::after{
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .onhit-info-icon{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--brass-dim);
+    color: var(--brass);
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+  .onhit-info-icon.hidden{ display: none; }
+
+  .status-badge.tooltip-wrap{ cursor: help; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="hero-mark">Book of Contests &mdash; battle log</p>
+    <h1>Who strikes, strikes with iron and fate.</h1>
+  </header>
+
+  <div class="teams">
+    <div class="team-col left" id="teamCol1">
+      <input class="team-name-input" id="team1Name" value="Team One" maxlength="30">
+      <div class="roster" id="roster1"></div>
+      <div class="add-row">
+        <button type="button" class="add-member-btn" id="addMember1">+ Add character</button>
+        <div class="preset-dropdown-wrap" id="presetWrap1">
+          <button type="button" class="add-member-btn preset-btn" id="addPresetBtn1">+ Add preset</button>
+          <div class="preset-menu" id="presetMenu1"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-col">
+      <span class="vs-glyph">vs</span>
+      <div class="vs-rule"></div>
+    </div>
+
+    <div class="team-col right" id="teamCol2">
+      <input class="team-name-input" id="team2Name" value="Team Two" maxlength="30">
+      <div class="roster" id="roster2"></div>
+      <button type="button" class="add-member-btn" id="addMember2">+ Add character</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="primary" id="startBtn">Start the battle</button>
+    <button id="rollBtn" disabled>Play round</button>
+    <button id="autoBtn" disabled>Simulate to the end</button>
+    <button id="mediaBtn">Average battles (1000x)</button>
+    <button id="resetBtn">New battle</button>
+    <button type="button" class="toggle" id="momentumBtn"><span class="toggle-pill"></span> Momentum: OFF</button>
+  </div>
+
+  <div class="arena" id="arena">
+    <p class="arena-empty">The arena awaits. Build the teams and start the battle.</p>
+  </div>
+
+  <h2 class="section-title">Battle Chronicle</h2>
+  <div class="log" id="log">
+    <div class="log-empty">No hits rolled yet.</div>
+  </div>
+
+  <footer class="note">
+    <details id="rulesDetails">
+      <summary>Rules &amp; notes</summary>
+      <div class="footer-content">
+        <p><b>SL Rule:</b> SL = (tens digit of the characteristic used as the threshold, plus the action's To Hit modifier) − (tens digit of the roll). Each round, every combatant still alive on both teams acts in order of decreasing Initiative: whoever acts performs their Actions in sequence, striking the target chosen among living enemies according to each action's Target (highest HP, lowest HP, or random). If the defender's SL (based on their Weapon Skill) is equal to or higher, the blow is parried and damage is 0; if the attacker's SL is higher, the blow lands. The battle ends when one team has no combatants left alive.</p>
+        <p><b>Reach Rule:</b> every action has its own Reach on five levels, from shortest to longest &mdash; very short, short, average, long, very long (a character can therefore have weapons of different reach depending on the action used). When a character defends against an attack made with an action whose Reach is shorter than the Reach of the action they're currently defending with (the last one they used, or the first in their list if they haven't acted yet), they add +10 to their own Weapon Skill for that defensive roll only, because they manage to keep the attacker at a distance. The bonus applies only on defense, never when they are the one attacking.</p>
+        <p><b>Character Stats:</b> besides Weapon Skill, Strength, Toughness, Armor, Initiative and HP, every character also has Ballistic Skill, Agility, Dexterity, Intelligence and Willpower (shown with the "Show more stats" button): for now these are descriptive values, used mainly as a threshold or damage bonus for Actions. Armor is a value set by hand on each sheet and is added to the tens digit of Toughness to form total Armor, which is subtracted from damage taken, always down to a minimum of 1 (e.g. an 8-damage hit against a total Armor of 5 deals 3 damage).</p>
+        <p><b>Actions Rule:</b> the "Actions" button on each sheet opens a window listing the character's actions (attacks, spells, checks, etc.), which replaced the old global stats N. Attacks and Target. A character performs at most ONE action on their turn (hitting multiple times in the same round via "Hits/round" doesn't count as separate actions, even though it takes up separate lines in the chronicle): which action is chosen depends on each one's "Use this action if:" menu, evaluated in the order they're listed in the Actions window. The options are: <b>Default</b> (used only if no other action's condition is met), <b>Not yet used</b> (until it has never been chosen in this battle), <b>Every 2 turns</b> (becomes available again only two of the character's turns after the last time it was used), <b>Has momentum</b> (only if the character has Momentum), and <b>Target has different status</b> (only if the chosen target doesn't already have the status this action inflicts). For each action you also set: a free-form name; the Threshold, i.e. which characteristic of the character is used for the Test; the Type, Opposed, Test, or Touch spell; for Opposed and Touch spell, also Yours, i.e. the attacker's characteristic used in the opposed roll, and Vs, i.e. the defender's characteristic used in the opposed roll; Hits/round, how many times that action hits per turn; To Hit, a fixed modifier added to the threshold characteristic before computing the SL (or the Test threshold); Damage, the damage dice in NdM notation (e.g. 1d10 = one 10-sided die, 2d6 = two 6-sided dice, 4/8/12-sided dice also valid) or a fixed whole number (e.g. 4, the default); Stat mod., an optional characteristic whose tens digit is added to the total damage; Target, the criterion for choosing the target; On Hit Effect, the status the hit inflicts on the target when it lands; Is melee, whether the action is melee (affects the Momentum advantage and how it's built, see below); and Reach, the reach of the weapon used by this specific action (see above). With Type Opposed, the "Yours" menu appears, indicating which characteristic the attacker uses in the opposed roll, and the "Vs" menu, indicating which characteristic the defender uses to oppose (by default Weapon Skill, like a parry): both roll a d100 and the blow lands if Yours' SL is higher than the defender's SL. The Threshold isn't used in Opposed actions. With Type Touch spell, the action first uses the Threshold for a Test; only if the Test succeeds does it immediately roll the Opposed check using Yours against Vs. Both must succeed. The Touch spell's Opposed SLs only determine whether the contact succeeds and aren't added to the damage; for Touch spell damage, SL is ignored unless the Damage textbox explicitly includes +SL, in which case the Test's SL is used. The Threshold isn't used as the characteristic for the Opposed roll. With Type Test, instead, the defender doesn't roll any die: the action is a simple check where the attacker rolls a d100 and succeeds if the result is lower than the Threshold characteristic plus the To Hit modifier; on success it deals the indicated Damage (plus any Stat mod.) and applies the On Hit Effect if present. For Test-type actions, the Damage field can also include the entry "SL" (e.g. "Sl+0", "1d6+SL"): it's replaced with the SL obtained from the check itself (threshold tens digit minus roll tens digit) and added to the damage; if the Damage field doesn't contain "SL", the check adds no SL damage bonus, as per the rule.</p>
+        <p><b>Momentum Rule:</b> it's gained ONLY by succeeding with an Opposed or Touch spell type action (for Touch spell, both the Threshold Test and the Opposed roll must succeed) and with "Is melee: Yes"; Test-type actions never grant Momentum. It's lost by failing an action, by failing to parry an attack taken, or by suffering a status (whatever its cause). The advantage from having Momentum on attack (roll the die and swap tens/units if the result improves) only applies to actions with "Is melee: Yes".</p>
+        <p><b>Modifiers Rule:</b> the "Modifiers" button on each sheet opens a window similar to the Actions one, with a list of conditional bonuses (e.g. the shield that eases parrying). For each you set: a free-form name; Stat, the characteristic it applies to (Armor included); Active when, the moment the bonus is active (during parry, during attack, the character's turn, Opposed-type actions, Test-type actions, when the character or an enemy is at half HP, the first turn of combat); Has, which indicates whether the roll on that characteristic, while the Modifier is active, gets Nothing (no effect), Advantage, or Disadvantage; and Modifier, the bonus value, which accepts two different notations: a plain number (e.g. "10" or "-5") is added directly to the characteristic's value before computing its tens digit for the roll, while a value with SL notation (e.g. "+3SL" or "SL+3", the default) doesn't touch the characteristic but adds (or subtracts, with "-3SL") directly to the total SL obtained from that characteristic's roll. A Modifier on Armor, instead, is added to or subtracted directly from the Armor value used to mitigate damage taken (numeric notation only, not SL). The advantage/disadvantage granted by an active-Has Modifier stacks with other sources (Momentum, Prone, Blinded, etc.) present on the same roll on the same characteristic: with 2 or more sources of advantage you get, besides the tens/units swap if it improves the roll, also a fixed +1 SL; with 2 or more sources of disadvantage you get a fixed -1 SL (besides the swap if it worsens the roll); if both advantage and disadvantage are present on the same roll, from any source and in any number, they fully cancel out and the roll is normal.</p>
+        <p><b>Status Rule:</b> each status below lists whether it stacks and what it does. When status advantage/disadvantage and Momentum advantage/disadvantage are both present on the same roll, they don't add up: advantage and disadvantage from opposing sources cancel each other out.</p>
+        <ul class="status-rules-list">
+          <li><b>Prone</b> <span class="stack-tag">not stackable</span> &mdash; gives advantage to whoever attacks the affected character (roll the die and swap tens/units if the result improves). Removed at the start of the affected character's turn.</li>
+          <li><b>Stunned</b> <span class="stack-tag">stackable</span> &mdash; removes 1 SL from all rolls per stack. If the stacks exceed the character's Toughness tens digit, they drop immediately to 0 HP. At the end of every round the affected character rolls a Toughness test (1d100 under Toughness) and, on success, removes a number of stacks equal to the test's SL + 1. Once all stacks are removed, Fatigued is applied.</li>
+          <li><b>Fatigued</b> <span class="stack-tag">not stackable</span> &mdash; removes 1 SL from all rolls.</li>
+          <li><b>Poisoned</b> <span class="stack-tag">stackable</span> &mdash; removes 1 SL from all rolls per stack, and at the end of the round deals 1 wound (-1 HP) per stack, not mitigated by Armor or Toughness. A Toughness test at round end also removes Poisoned stacks equal to the test's SL + 1 on success.</li>
+          <li><b>Blinded</b> <span class="stack-tag">not stackable</span> &mdash; gives disadvantage to actions that use Weapon Skill as the threshold (parrying included) and gives advantage to whoever hits the affected character. Removed at the end of the affected character's turn.</li>
+          <li><b>Bleeding</b> <span class="stack-tag">stackable</span> &mdash; at the end of the round, deals 1 wound (-1 HP) per stack, not mitigated by Armor or Toughness.</li>
+          <li><b>Entangled</b> <span class="stack-tag">not stackable</span> &mdash; removes 1 SL from all rolls.</li>
+          <li><b>Ablaze</b> <span class="stack-tag">stackable</span> &mdash; at the end of the round, deals 1d10 damage (+1 per stack beyond the first), mitigated by the Toughness tens digit and Armor, with a minimum of 1 damage like any other successful hit.</li>
+        </ul>
+      </div>
+    </details>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const el = id => document.getElementById(id);
+
+  const state = {
+    started: false,
+    over: false,
+    round: 0,
+    team1: [],
+    team2: [],
+    team1Name: 'Team One',
+    team2Name: 'Team Two',
+    momentumOn: false
+  };
+
+  let charSeq = 0;
+
+  function clampInt(v, min, max, fallback){
+    let n = parseInt(v, 10);
+    if(isNaN(n)) n = fallback;
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function decina(n){ return Math.floor(n/10); }
+  function rollDie(){ return Math.floor(Math.random()*101); } // 0-100
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function formatSigned(n){
+    return (n > 0 ? '+' : '') + n;
+  }
+
+  // ---- Gestione roster (aggiunta/rimozione personaggi) ----
+
+  // Caratteristiche selezionabili nelle azioni (soglia per colpire e
+  // caratteristica che aggiunge bonus al danno).
+  const CHAR_STAT_OPTIONS = [
+    { key: 'ws', label: 'Weapon Skill' },
+    { key: 'bs', label: 'Ballistic Skill' },
+    { key: 'str', label: 'Strength' },
+    { key: 'tough', label: 'Toughness' },
+    { key: 'armor', label: 'Armor' },
+    { key: 'init', label: 'Initiative' },
+    { key: 'agility', label: 'Agility' },
+    { key: 'dexterity', label: 'Dexterity' },
+    { key: 'intelligence', label: 'Intelligence' },
+    { key: 'willpower', label: 'Willpower' }
+  ];
+
+  const CHAR_STAT_LABELS = Object.fromEntries(CHAR_STAT_OPTIONS.map(s => [s.key, s.label]));
+
+  // ---- Definizione degli status applicabili come "On Hit Effect" ----
+  // Ogni status ha un'etichetta (mostrata nel menù a tendina e nelle
+  // schede) e indica se è stackabile (più applicazioni si sommano in
+  // più segni/stack) oppure no (una nuova applicazione resta a 1).
+  const STATUS_DEFS = {
+    prone:     { label: 'Prone',     stackable: false },
+    stunned:   { label: 'Stunned',   stackable: true  },
+    fatigued:  { label: 'Fatigued',  stackable: false },
+    poisoned:  { label: 'Poisoned',  stackable: true  },
+    blinded:   { label: 'Blinded',   stackable: false },
+    bleeding:  { label: 'Bleeding',  stackable: true  },
+    entangled: { label: 'Entangled', stackable: false },
+    ablaze:    { label: 'Ablaze',    stackable: true  }
+  };
+
+  // Short English descriptions of what each status actually does, shown
+  // as a tooltip next to the "On Hit Effect" field and on the status
+  // badges displayed on a character's card.
+  const STATUS_DESCRIPTIONS = {
+    prone: "Not stackable. Gives advantage to whoever attacks the affected character (roll the die and swap tens/units if it improves the roll). Removed at the start of the affected character's turn.",
+    stunned: "Stackable. -1 SL to all rolls per stack. If stacks exceed the character's Toughness tens digit, they drop immediately to 0 HP. At the end of each round they roll a Toughness test; on success, removes stacks equal to the test's SL + 1. Once all stacks are removed, Fatigued is applied.",
+    fatigued: "Not stackable. -1 SL to all rolls.",
+    poisoned: "Stackable. -1 SL to all rolls per stack, and deals 1 wound (-1 HP) per stack at the end of each round, not mitigated by Armor or Toughness. A Toughness test at round end removes stacks equal to SL + 1 on success.",
+    blinded: "Not stackable. Gives disadvantage to actions using Weapon Skill as the threshold (parry included) and gives advantage to whoever hits the affected character. Removed at the end of the affected character's turn.",
+    bleeding: "Stackable. Deals 1 wound (-1 HP) per stack at the end of each round, not mitigated by Armor or Toughness.",
+    entangled: "Not stackable. -1 SL to all rolls.",
+    ablaze: "Stackable. Deals 1d10 damage (+1 per stack beyond the first) at the end of each round, mitigated by the Toughness tens digit and Armor, with a minimum of 1 damage like any other successful hit."
+  };
+
+  const STATUS_ONHIT_OPTIONS = [
+    { key: 'no', label: 'None' },
+    { key: 'prone', label: 'Prone' },
+    { key: 'stunned', label: 'Stunned' },
+    { key: 'fatigued', label: 'Fatigued' },
+    { key: 'poisoned', label: 'Poisoned' },
+    { key: 'blinded', label: 'Blinded' },
+    { key: 'bleeding', label: 'Bleeding' },
+    { key: 'entangled', label: 'Entangled' },
+    { key: 'ablaze', label: 'Ablaze' }
+  ];
+
+  let actionSeq = 0;
+
+  function defaultActionData(overrides){
+    const merged = Object.assign({
+      name: 'New action',
+      statKey: 'ws',
+      yoursStatKey: 'ws',
+      type: 'opposed',
+      vsStatKey: 'ws',
+      hits: 1,
+      toHitMod: 0,
+      damageDice: '4',
+      damageStatKey: 'none',
+      target: 'random',
+      onHit: 'no',
+      isMelee: 'yes',
+      reach: 'average',
+      useIf: 'default'
+    }, overrides || {});
+
+    // Per le azioni di Tipo "Test", il campo Damage parte di default su
+    // "Ls+0": l'LS ottenuto dal check conta come danno grazie alla
+    // logica di rollTestDamageFormula (vedi sotto), a meno che chi crea
+    // l'azione non abbia già indicato esplicitamente un altro valore.
+    if(!(overrides && Object.prototype.hasOwnProperty.call(overrides, 'yoursStatKey'))){
+      merged.yoursStatKey = merged.statKey;
+    }
+
+    const damageDiceProvided = overrides && Object.prototype.hasOwnProperty.call(overrides, 'damageDice');
+    if(merged.type === 'test' && !damageDiceProvided){
+      merged.damageDice = 'Sl+0';
+    } else if(merged.type === 'touch' && !damageDiceProvided){
+      // Un Touch spell non aggiunge LS automaticamente al danno: il campo
+      // Damage deve contenere esplicitamente +LS per richiederlo.
+      merged.damageDice = '4';
+    }
+
+    return merged;
+  }
+
+  function actionRowHtml(actionId, a){
+    const data = defaultActionData(a);
+    const statOptions = CHAR_STAT_OPTIONS.map(s =>
+      `<option value="${s.key}"${data.statKey === s.key ? ' selected' : ''}>${s.label}</option>`
+    ).join('');
+    const yoursStatOptions = CHAR_STAT_OPTIONS.map(s =>
+      `<option value="${s.key}"${data.yoursStatKey === s.key ? ' selected' : ''}>${s.label}</option>`
+    ).join('');
+    const dmgStatOptions = `<option value="none"${data.damageStatKey === 'none' ? ' selected' : ''}>None</option>` +
+      CHAR_STAT_OPTIONS.map(s =>
+        `<option value="${s.key}"${data.damageStatKey === s.key ? ' selected' : ''}>${s.label}</option>`
+      ).join('');
+    const hitsOptions = Array.from({ length: 10 }, (_, i) => i + 1).map(n =>
+      `<option value="${n}"${data.hits === n ? ' selected' : ''}>${n} ${n > 1 ? 'hits' : 'hit'}</option>`
+    ).join('');
+    const vsStatOptions = CHAR_STAT_OPTIONS.map(s =>
+      `<option value="${s.key}"${data.vsStatKey === s.key ? ' selected' : ''}>${s.label}</option>`
+    ).join('');
+    const usesDefense = data.type !== 'test';
+    const isTouchSpell = data.type === 'touch';
+
+    return `
+      <div class="action-row" data-action-id="${actionId}">
+        <div class="action-row-controls">
+          <button type="button" class="action-move-up" title="Move up">▲</button>
+          <button type="button" class="action-move-down" title="Move down">▼</button>
+          <button type="button" class="action-remove" title="Remove action">✕</button>
+        </div>
+        <div class="action-fields">
+          <div class="mini-field"><label>Name</label><input type="text" class="a-name" maxlength="30" value="${escapeHtml(data.name)}"></div>
+          <div class="mini-field a-soglia-field${(data.type === 'test' || data.type === 'touch') ? '' : ' hidden'}"><label>Threshold</label><select class="a-stat">${statOptions}</select></div>
+          <div class="mini-field">
+            <label>Type</label>
+            <select class="a-type">
+              <option value="opposed"${data.type === 'opposed' ? ' selected' : ''}>Opposed</option>
+              <option value="test"${data.type === 'test' ? ' selected' : ''}>Test</option>
+              <option value="touch"${isTouchSpell ? ' selected' : ''}>Touch spell</option>
+            </select>
+          </div>
+          <div class="mini-field a-yours-field${usesDefense ? '' : ' hidden'}"><label>Yours</label><select class="a-yours">${yoursStatOptions}</select></div>
+          <div class="mini-field a-vs-field${usesDefense ? '' : ' hidden'}"><label>Vs</label><select class="a-vs">${vsStatOptions}</select></div>
+          <div class="mini-field"><label>Hits/round</label><select class="a-hits">${hitsOptions}</select></div>
+          <div class="mini-field"><label>To Hit</label><input type="number" class="a-tohit" value="${data.toHitMod}"></div>
+          <div class="mini-field-pair">
+            <div class="mini-field"><label>Damage</label><input type="text" class="a-damage" value="${escapeHtml(data.damageDice)}" placeholder="4 or 1d10 or Sl+0"></div>
+            <span class="field-plus">+</span>
+            <div class="mini-field"><label>Stat mod.</label><select class="a-dmgstat">${dmgStatOptions}</select></div>
+          </div>
+          <div class="mini-field">
+            <label>Target</label>
+            <select class="a-target">
+              <option value="random"${data.target === 'random' ? ' selected' : ''}>Random</option>
+              <option value="highest"${data.target === 'highest' ? ' selected' : ''}>Enemy with most HP</option>
+              <option value="lowest"${data.target === 'lowest' ? ' selected' : ''}>Enemy with least HP</option>
+            </select>
+          </div>
+          <div class="mini-field">
+            <label>On Hit Effect <span class="onhit-info-icon tooltip-wrap${data.onHit === 'no' ? ' hidden' : ''}" data-tip="${escapeHtml(STATUS_DESCRIPTIONS[data.onHit] || '')}">i</span></label>
+            <select class="a-onhit">
+              ${STATUS_ONHIT_OPTIONS.map(s => `<option value="${s.key}"${data.onHit === s.key ? ' selected' : ''}>${s.label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="mini-field">
+            <label>Is melee</label>
+            <select class="a-melee">
+              <option value="yes"${data.isMelee !== 'no' ? ' selected' : ''}>Yes</option>
+              <option value="no"${data.isMelee === 'no' ? ' selected' : ''}>No</option>
+            </select>
+          </div>
+          <div class="mini-field a-reach-field${usesDefense ? '' : ' hidden'}">
+            <label>Reach</label>
+            <select class="a-reach">
+              <option value="very_short"${data.reach === 'very_short' ? ' selected' : ''}>Very short</option>
+              <option value="short"${data.reach === 'short' ? ' selected' : ''}>Short</option>
+              <option value="average"${data.reach === 'average' ? ' selected' : ''}>Average</option>
+              <option value="long"${data.reach === 'long' ? ' selected' : ''}>Long</option>
+              <option value="very_long"${data.reach === 'very_long' ? ' selected' : ''}>Very long</option>
+            </select>
+          </div>
+          <div class="mini-field">
+            <label>Use this action if:</label>
+            <select class="a-usecond">
+              <option value="default"${data.useIf === 'default' ? ' selected' : ''} title="Prioritize this if none of the other actions have a met condition">Default</option>
+              <option value="unused"${data.useIf === 'unused' ? ' selected' : ''} title="If this action hasn't been used yet">Not yet used</option>
+              <option value="every2"${data.useIf === 'every2' ? ' selected' : ''} title="Every 2 turns">Every 2 turns</option>
+              <option value="momentum"${data.useIf === 'momentum' ? ' selected' : ''} title="If the character has Momentum">Has momentum</option>
+              <option value="targetStatus"${data.useIf === 'targetStatus' ? ' selected' : ''} title="If the chosen target doesn't already have a status this action can inflict">Target has different status</option>
+            </select>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  let modifierSeq = 0;
+
+  // Opzioni del menù "Attivo quando" di un Modificatore: indicano in
+  // quale momento del combattimento il bonus viene applicato alla
+  // caratteristica scelta.
+  const MODIFIER_ACTIVE_WHEN_OPTIONS = [
+    { key: 'parry', label: 'During parry' },
+    { key: 'attack', label: 'During attack' },
+    { key: 'ownTurn', label: "Character's turn" },
+    { key: 'opposedType', label: 'Opposed-type actions' },
+    { key: 'testType', label: 'Test-type actions' },
+    { key: 'halfHpSelf', label: 'When the character is at half HP' },
+    { key: 'halfHpEnemy', label: 'If an enemy is at half HP' },
+    { key: 'firstTurn', label: 'The first turn of combat' }
+  ];
+
+  // Opzioni del menù "Has" di un Modificatore: indicano se, quando il
+  // Modificatore è attivo, il tiro riceve vantaggio, svantaggio o nessuno
+  // dei due (comportamento di default, invariato).
+  const MODIFIER_HAS_OPTIONS = [
+    { key: 'nothing', label: 'Nothing' },
+    { key: 'advantage', label: 'Advantage' },
+    { key: 'disadvantage', label: 'Disadvantage' }
+  ];
+
+  function defaultModifierData(overrides){
+    return Object.assign({
+      name: 'Shield',
+      charat: 'ws',
+      activeWhen: 'parry',
+      has: 'nothing',
+      amount: '+1SL'
+    }, overrides || {});
+  }
+
+  // I due modificatori mostrati di default su ogni nuovo personaggio
+  // (equivalenti allo scudo dell'esempio): +1LS al Weapon Skill in
+  // parata, e +3 all'Armatura sempre in parata.
+  function defaultModifiersList(){
+    return [
+      defaultModifierData({ name: 'Shield', charat: 'ws', activeWhen: 'parry', amount: '+1SL' }),
+      defaultModifierData({ name: 'Shield', charat: 'armor', activeWhen: 'parry', amount: '3' })
+    ];
+  }
+
+  function modifierRowHtml(modifierId, m){
+    const data = defaultModifierData(m);
+    const charatOptions = CHAR_STAT_OPTIONS.map(s =>
+      `<option value="${s.key}"${data.charat === s.key ? ' selected' : ''}>${s.label}</option>`
+    ).join('');
+    const activeWhenOptions = MODIFIER_ACTIVE_WHEN_OPTIONS.map(o =>
+      `<option value="${o.key}"${data.activeWhen === o.key ? ' selected' : ''}>${o.label}</option>`
+    ).join('');
+    const hasOptions = MODIFIER_HAS_OPTIONS.map(o =>
+      `<option value="${o.key}"${data.has === o.key ? ' selected' : ''}>${o.label}</option>`
+    ).join('');
+
+    return `
+      <div class="modifier-row" data-modifier-id="${modifierId}">
+        <div class="modifier-row-controls">
+          <button type="button" class="modifier-move-up" title="Move up">▲</button>
+          <button type="button" class="modifier-move-down" title="Move down">▼</button>
+          <button type="button" class="modifier-remove" title="Remove modifier">✕</button>
+        </div>
+        <div class="modifier-fields">
+          <div class="mini-field"><label>Name</label><input type="text" class="mod-name" maxlength="30" value="${escapeHtml(data.name)}"></div>
+          <div class="mini-field"><label>Stat</label><select class="mod-charat">${charatOptions}</select></div>
+          <div class="mini-field"><label>Active when</label><select class="mod-activewhen">${activeWhenOptions}</select></div>
+          <div class="mini-field"><label>Has</label><select class="mod-has">${hasOptions}</select></div>
+          <div class="mini-field"><label>Modifier</label><input type="text" class="mod-amount" value="${escapeHtml(String(data.amount))}" placeholder="10 or +3SL"></div>
+        </div>
+      </div>`;
+  }
+
+  function memberCardHtml(id, d){
+    return `
+      <div class="member-top">
+        <input class="member-name-input m-name" maxlength="24" value="${escapeHtml(d.name)}">
+        <button type="button" class="remove-btn m-remove" title="Remove character">✕</button>
+      </div>
+      <div class="member-fields">
+        <div class="mini-field"><label>Weapon Skill</label><input type="number" class="m-ws" value="${d.ws}" min="0" max="99"></div>
+        <div class="mini-field"><label>Strength</label><input type="number" class="m-str" value="${d.str}" min="0" max="99"></div>
+        <div class="mini-field"><label>Toughness</label><input type="number" class="m-tough" value="${d.tough}" min="0" max="99"></div>
+        <div class="mini-field"><label>Armor</label><input type="number" class="m-armor" value="${d.armor || 0}" min="0" max="99"></div>
+        <div class="mini-field"><label>Initiative</label><input type="number" class="m-init" value="${d.init}" min="0" max="99"></div>
+        <div class="mini-field"><label>HP</label><input type="number" class="m-hp" value="${d.hp}" min="1" max="200"></div>
+      </div>
+      <button type="button" class="toggle-stats-btn m-toggle-stats">Show more stats ▾</button>
+      <div class="member-fields extra-stats" style="display:none">
+        <div class="mini-field"><label>Ballistic Skill</label><input type="number" class="m-bs" value="${d.bs}" min="0" max="99"></div>
+        <div class="mini-field"><label>Agility</label><input type="number" class="m-agility" value="${d.agility}" min="0" max="99"></div>
+        <div class="mini-field"><label>Dexterity</label><input type="number" class="m-dexterity" value="${d.dexterity}" min="0" max="99"></div>
+        <div class="mini-field"><label>Intelligence</label><input type="number" class="m-intelligence" value="${d.intelligence}" min="0" max="99"></div>
+        <div class="mini-field"><label>Willpower</label><input type="number" class="m-willpower" value="${d.willpower}" min="0" max="99"></div>
+      </div>
+      <button type="button" class="actions-btn m-actions-btn">Actions (${(d.actions && d.actions.length ? d.actions : [defaultActionData()]).length})</button>
+      <div class="actions-modal-backdrop">
+        <div class="actions-modal">
+          <div class="actions-modal-header">
+            <h3>Actions</h3>
+            <button type="button" class="actions-add-btn" title="Add action">+</button>
+            <button type="button" class="actions-close-btn" title="Close">✕</button>
+          </div>
+          <div class="actions-list">
+            ${(d.actions && d.actions.length ? d.actions : [defaultActionData()]).map(a => actionRowHtml('act' + (++actionSeq), a)).join('')}
+          </div>
+        </div>
+      </div>
+      <button type="button" class="modifiers-btn m-modifiers-btn">Modifiers (${(d.modifiers && d.modifiers.length ? d.modifiers : defaultModifiersList()).length})</button>
+      <div class="modifiers-modal-backdrop">
+        <div class="modifiers-modal">
+          <div class="modifiers-modal-header">
+            <h3>Modifiers</h3>
+            <button type="button" class="modifiers-add-btn" title="Add modifier">+</button>
+            <button type="button" class="modifiers-close-btn" title="Close">✕</button>
+          </div>
+          <div class="modifiers-list">
+            ${(d.modifiers && d.modifiers.length ? d.modifiers : defaultModifiersList()).map(m => modifierRowHtml('mod' + (++modifierSeq), m)).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="member-status">
+        <div class="status-label"><span class="status-name"></span><span class="status-hp"></span></div>
+        <div class="hp-track"><div class="hp-fill" style="width:100%"></div></div>
+        <div class="status-badges"></div>
+      </div>
+    `;
+  }
+
+  // ---- Preset di personaggi (Squadra Uno) ----
+  // Ogni preset fornisce lo stesso oggetto "defaults" accettato da
+  // addMember(teamKey, defaults): statistiche di base più liste
+  // complete di Azioni e Modificatori già pronte.
+  const PRESETS = {
+    rudy: {
+      label: 'Rudy',
+      data: {
+        name: 'Rudy',
+        ws: 51, bs: 30, str: 33, tough: 30, armor: 0, init: 45,
+        agility: 30, dexterity: 70, intelligence: 30, willpower: 62,
+        hp: 12,
+        actions: [defaultActionData({
+          name: 'Shock',
+          statKey: 'willpower',
+          yoursStatKey: 'dexterity',
+          type: 'touch',
+          vsStatKey: 'ws',
+          hits: 1,
+          toHitMod: 0,
+          damageDice: '0',
+          damageStatKey: 'none',
+          target: 'random',
+          onHit: 'stunned',
+          isMelee: 'yes',
+          reach: 'very_short',
+          useIf: 'default'
+        })],
+        modifiers: [defaultModifierData({
+          name: 'Staff',
+          charat: 'ws',
+          activeWhen: 'parry',
+          amount: '+2SL'
+        })]
+      }
+    }
+  };
+
+  function addMember(teamKey, defaults){
+    charSeq += 1;
+    const id = 'm' + charSeq;
+    const d = Object.assign({
+      name: 'Fighter ' + charSeq,
+      ws: 50, bs: 30, str: 30, tough: 30, armor: 0, init: 40,
+      agility: 30, dexterity: 30, intelligence: 30, willpower: 30,
+      hp: 20,
+      actions: [defaultActionData()],
+      modifiers: defaultModifiersList()
+    }, defaults || {});
+    const container = el(teamKey === 1 ? 'roster1' : 'roster2');
+    const card = document.createElement('div');
+    card.className = 'member-card';
+    card.dataset.id = id;
+    card.innerHTML = memberCardHtml(id, d);
+    container.appendChild(card);
+  }
+
+  function wireRemoveButtons(containerId){
+    el(containerId).addEventListener('click', function(e){
+      if(!e.target.classList.contains('m-remove')) return;
+      const container = el(containerId);
+      if(container.querySelectorAll('.member-card').length <= 1){
+        alert('Each team must have at least one character.');
+        return;
+      }
+      e.target.closest('.member-card').remove();
+    });
+  }
+
+  // Pulsante "Mostra/Nascondi altre caratteristiche": apre o chiude il
+  // blocco con Ballistic Skill, Agility, Dexterity, Intelligence e
+  // Willpower, per non affollare la scheda con statistiche che al
+  // momento non incidono ancora sulle regole di combattimento.
+  function wireToggleStatsButtons(containerId){
+    el(containerId).addEventListener('click', function(e){
+      if(!e.target.classList.contains('m-toggle-stats')) return;
+      const card = e.target.closest('.member-card');
+      const extra = card.querySelector('.extra-stats');
+      const isHidden = extra.style.display === 'none';
+      extra.style.display = isHidden ? 'grid' : 'none';
+      e.target.textContent = isHidden ? 'Hide more stats ▴' : 'Show more stats ▾';
+    });
+  }
+
+  // (Nota "Armatura totale" rimossa dalla scheda personaggio)
+
+  // Finestra "Azioni": apre/chiude il modal per il personaggio su cui si
+  // è cliccato, e gestisce l'aggiunta, la rimozione e il riordino delle
+  // singole azioni al suo interno.
+  // Aggiorna il numero tra parentesi mostrato sui pulsanti "Azioni" e
+  // "Modificatori" di una scheda, in base a quante righe sono presenti
+  // in questo momento nella rispettiva lista.
+  function updateActionsCount(card){
+    const btn = card.querySelector('.m-actions-btn');
+    if(!btn) return;
+    const count = card.querySelectorAll('.action-row').length;
+    btn.textContent = `Actions (${count})`;
+  }
+
+  function updateModifiersCount(card){
+    const btn = card.querySelector('.m-modifiers-btn');
+    if(!btn) return;
+    const count = card.querySelectorAll('.modifier-row').length;
+    btn.textContent = `Modifiers (${count})`;
+  }
+
+  function wireActionsModal(containerId){
+    const container = el(containerId);
+
+    // Soglia è usata dal Test: anche un Touch spell esegue prima questa
+    // prova, quindi il campo resta visibile per Test e Touch spell.
+    // Yours e Vs + Portata servono invece alla parte Opposed.
+    container.addEventListener('change', function(e){
+      if(e.target.classList.contains('a-type')){
+        const row = e.target.closest('.action-row');
+        const usesDefense = e.target.value !== 'test';
+        const sogliaField = row.querySelector('.a-soglia-field');
+        if(sogliaField) sogliaField.classList.toggle('hidden', !(e.target.value === 'test' || e.target.value === 'touch'));
+        const yoursField = row.querySelector('.a-yours-field');
+        if(yoursField) yoursField.classList.toggle('hidden', !usesDefense);
+        const vsField = row.querySelector('.a-vs-field');
+        if(vsField) vsField.classList.toggle('hidden', !usesDefense);
+        const reachField = row.querySelector('.a-reach-field');
+        if(reachField) reachField.classList.toggle('hidden', !usesDefense);
+
+        // I Test e i Touch spell possono usare LS nel danno: per i Touch
+        // spell l'LS utile al danno resta però quello del Test, mentre l'Opposed
+        // serve soltanto a verificare se il contatto va a segno.
+        const damageInput = row.querySelector('.a-damage');
+        if(damageInput){
+          const current = damageInput.value.trim();
+          if(e.target.value === 'test'){
+            if(/^4$/i.test(current)) damageInput.value = 'Ls+0';
+          } else if(e.target.value === 'touch'){
+            // Per Touch spell non lasciare un LS implicito ereditato dal Test.
+            if(/^ls\+0$/i.test(current)) damageInput.value = '4';
+          } else if(/^ls\+0$/i.test(current)){
+            damageInput.value = '4';
+          }
+        }
+      }
+
+      // Aggiorna il tooltip informativo dell'On Hit Effect quando lo
+      // status selezionato cambia.
+      if(e.target.classList.contains('a-onhit')){
+        const row = e.target.closest('.action-row');
+        const icon = row.querySelector('.onhit-info-icon');
+        if(icon){
+          const key = e.target.value;
+          icon.classList.toggle('hidden', key === 'no');
+          icon.setAttribute('data-tip', STATUS_DESCRIPTIONS[key] || '');
+        }
+      }
+    });
+
+    container.addEventListener('click', function(e){
+      // Apre la finestra Azioni del personaggio.
+      if(e.target.classList.contains('m-actions-btn')){
+        const backdrop = e.target.closest('.member-card').querySelector('.actions-modal-backdrop');
+        backdrop.classList.add('open');
+        return;
+      }
+
+      // Chiude la finestra cliccando sulla ✕ o sullo sfondo scuro.
+      if(e.target.classList.contains('actions-close-btn') || e.target.classList.contains('actions-modal-backdrop')){
+        const backdrop = e.target.closest('.actions-modal-backdrop');
+        if(backdrop) backdrop.classList.remove('open');
+        return;
+      }
+
+      // Aggiunge una nuova azione in fondo alla lista.
+      if(e.target.classList.contains('actions-add-btn')){
+        const list = e.target.closest('.actions-modal').querySelector('.actions-list');
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = actionRowHtml('act' + (++actionSeq), defaultActionData());
+        list.appendChild(wrapper.firstElementChild);
+        updateActionsCount(e.target.closest('.member-card'));
+        return;
+      }
+
+      // Rimuove una singola azione (mantenendone sempre almeno una).
+      if(e.target.classList.contains('action-remove')){
+        const list = e.target.closest('.actions-list');
+        if(list.querySelectorAll('.action-row').length <= 1){
+          alert('Each character must have at least one action.');
+          return;
+        }
+        const memberCard = e.target.closest('.member-card');
+        e.target.closest('.action-row').remove();
+        updateActionsCount(memberCard);
+        return;
+      }
+
+      // Sposta un'azione su o giù nell'ordine di esecuzione.
+      if(e.target.classList.contains('action-move-up')){
+        const row = e.target.closest('.action-row');
+        const prev = row.previousElementSibling;
+        if(prev) row.parentNode.insertBefore(row, prev);
+        return;
+      }
+      if(e.target.classList.contains('action-move-down')){
+        const row = e.target.closest('.action-row');
+        const next = row.nextElementSibling;
+        if(next) row.parentNode.insertBefore(next, row);
+        return;
+      }
+    });
+  }
+
+  // Finestra "Modificatori": stessa logica della finestra Azioni, ma per
+  // l'elenco dei modificatori (bonus condizionati) del personaggio.
+  function wireModifiersModal(containerId){
+    const container = el(containerId);
+
+    container.addEventListener('click', function(e){
+      // Apre la finestra Modificatori del personaggio.
+      if(e.target.classList.contains('m-modifiers-btn')){
+        const backdrop = e.target.closest('.member-card').querySelector('.modifiers-modal-backdrop');
+        backdrop.classList.add('open');
+        return;
+      }
+
+      // Chiude la finestra cliccando sulla ✕ o sullo sfondo scuro.
+      if(e.target.classList.contains('modifiers-close-btn') || e.target.classList.contains('modifiers-modal-backdrop')){
+        const backdrop = e.target.closest('.modifiers-modal-backdrop');
+        if(backdrop) backdrop.classList.remove('open');
+        return;
+      }
+
+      // Aggiunge un nuovo modificatore in fondo alla lista.
+      if(e.target.classList.contains('modifiers-add-btn')){
+        const list = e.target.closest('.modifiers-modal').querySelector('.modifiers-list');
+        const emptyNote = list.querySelector('.modifiers-list-empty');
+        if(emptyNote) emptyNote.remove();
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = modifierRowHtml('mod' + (++modifierSeq), defaultModifierData());
+        list.appendChild(wrapper.firstElementChild);
+        updateModifiersCount(e.target.closest('.member-card'));
+        return;
+      }
+
+      // Rimuove un singolo modificatore. A differenza delle azioni, un
+      // personaggio può restare anche senza alcun modificatore: quando
+      // si rimuove l'ultimo, la lista resta semplicemente vuota.
+      if(e.target.classList.contains('modifier-remove')){
+        const memberCard = e.target.closest('.member-card');
+        const list = e.target.closest('.modifiers-list');
+        e.target.closest('.modifier-row').remove();
+        if(!list.querySelector('.modifier-row')){
+          list.innerHTML = '<p class="modifiers-list-empty">No modifiers.</p>';
+        }
+        updateModifiersCount(memberCard);
+        return;
+      }
+
+      // Sposta un modificatore su o giù nell'ordine.
+      if(e.target.classList.contains('modifier-move-up')){
+        const row = e.target.closest('.modifier-row');
+        const prev = row.previousElementSibling;
+        if(prev) row.parentNode.insertBefore(row, prev);
+        return;
+      }
+      if(e.target.classList.contains('modifier-move-down')){
+        const row = e.target.closest('.modifier-row');
+        const next = row.nextElementSibling;
+        if(next) row.parentNode.insertBefore(next, row);
+        return;
+      }
+    });
+  }
+
+  wireRemoveButtons('roster1');
+  wireRemoveButtons('roster2');
+  wireToggleStatsButtons('roster1');
+  wireToggleStatsButtons('roster2');
+  wireActionsModal('roster1');
+  wireActionsModal('roster2');
+  wireModifiersModal('roster1');
+  wireModifiersModal('roster2');
+
+  el('addMember1').addEventListener('click', () => addMember(1));
+  el('addMember2').addEventListener('click', () => addMember(2));
+
+  // ---- Pulsante "+ Aggiungi preset" (Squadra Uno) ----
+  // Popola il menù a tendina con i preset disponibili in PRESETS e
+  // gestisce apertura/chiusura del menù e la selezione di un preset.
+  function populatePresetMenu(menuEl, teamKey){
+    const keys = Object.keys(PRESETS);
+    if(keys.length === 0){
+      menuEl.innerHTML = '<p class="preset-menu-empty">No presets available.</p>';
+      return;
+    }
+    menuEl.innerHTML = keys.map(key =>
+      `<button type="button" class="preset-menu-item" data-preset="${key}">${escapeHtml(PRESETS[key].label)}</button>`
+    ).join('');
+  }
+
+  function closeAllPresetMenus(){
+    document.querySelectorAll('.preset-menu.open').forEach(m => m.classList.remove('open'));
+  }
+
+  (function wirePresetDropdown(wrapId, btnId, menuId, teamKey){
+    const wrap = el(wrapId);
+    if(!wrap) return;
+    const btn = el(btnId);
+    const menu = el(menuId);
+    populatePresetMenu(menu, teamKey);
+
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(btn.disabled) return;
+      const willOpen = !menu.classList.contains('open');
+      closeAllPresetMenus();
+      if(willOpen) menu.classList.add('open');
+    });
+
+    menu.addEventListener('click', function(e){
+      const item = e.target.closest('.preset-menu-item');
+      if(!item) return;
+      const key = item.dataset.preset;
+      const preset = PRESETS[key];
+      if(preset) addMember(teamKey, preset.data);
+      menu.classList.remove('open');
+    });
+  })('presetWrap1', 'addPresetBtn1', 'presetMenu1', 1);
+
+  document.addEventListener('click', closeAllPresetMenus);
+
+  // Roster iniziale (equivalente al duello originale)
+  addMember(1, {
+    name: 'Aldric the Black', ws: 55, str: 40, tough: 24, init: 45, hp: 30,
+    actions: [defaultActionData({ name: 'Sword strike', statKey: 'ws', hits: 1, toHitMod: 0, damageDice: '4', damageStatKey: 'str', target: 'random', reach: 'average' })]
+  });
+  addMember(2, {
+    name: 'Ythel of the Marsh', ws: 48, str: 40, tough: 40, init: 52, hp: 28,
+    actions: [defaultActionData({ name: 'Cleave', statKey: 'ws', hits: 1, toHitMod: 0, damageDice: '8', damageStatKey: 'none', target: 'random', reach: 'average' })]
+  });
+
+  function readTeamSetup(teamKey){
+    const container = el(teamKey === 1 ? 'roster1' : 'roster2');
+    const cards = [...container.querySelectorAll('.member-card')];
+    return cards.map(card => {
+      const hpMax = clampInt(card.querySelector('.m-hp').value, 1, 200, 20);
+      const tough = clampInt(card.querySelector('.m-tough').value, 0, 99, 30);
+      const armorStat = clampInt(card.querySelector('.m-armor').value, 0, 99, 0);
+      return {
+        id: card.dataset.id,
+        team: teamKey,
+        name: card.querySelector('.m-name').value.trim() || ('Fighter'),
+        ws: clampInt(card.querySelector('.m-ws').value, 0, 99, 50),
+        bs: clampInt(card.querySelector('.m-bs').value, 0, 99, 30),
+        str: clampInt(card.querySelector('.m-str').value, 0, 99, 30),
+        tough: tough,
+        armor: decina(tough) + armorStat,
+        init: clampInt(card.querySelector('.m-init').value, 0, 99, 40),
+        agility: clampInt(card.querySelector('.m-agility').value, 0, 99, 30),
+        dexterity: clampInt(card.querySelector('.m-dexterity').value, 0, 99, 30),
+        intelligence: clampInt(card.querySelector('.m-intelligence').value, 0, 99, 30),
+        willpower: clampInt(card.querySelector('.m-willpower').value, 0, 99, 30),
+        hpMax: hpMax,
+        hp: hpMax,
+        actions: readActionsFromCard(card),
+        modifiers: readModifiersFromCard(card),
+        momentum: false,
+        statuses: {},
+        currentAction: null,
+        actsCount: 0
+      };
+    });
+  }
+
+  function readActionsFromCard(card){
+    const rows = [...card.querySelectorAll('.action-row')];
+    return rows.map(row => ({
+      name: row.querySelector('.a-name').value.trim() || 'Action',
+      statKey: row.querySelector('.a-stat').value,
+      yoursStatKey: row.querySelector('.a-yours').value,
+      type: row.querySelector('.a-type').value,
+      vsStatKey: row.querySelector('.a-vs').value,
+      hits: clampInt(row.querySelector('.a-hits').value, 1, 10, 1),
+      toHitMod: clampInt(row.querySelector('.a-tohit').value, -99, 99, 0),
+      damageDice: row.querySelector('.a-damage').value.trim() || '4',
+      damageStatKey: row.querySelector('.a-dmgstat').value,
+      target: row.querySelector('.a-target').value,
+      onHit: row.querySelector('.a-onhit').value,
+      isMelee: row.querySelector('.a-melee').value === 'no' ? 'no' : 'yes',
+      reach: row.querySelector('.a-reach').value,
+      useIf: row.querySelector('.a-usecond').value
+    }));
+  }
+
+  function readModifiersFromCard(card){
+    const rows = [...card.querySelectorAll('.modifier-row')];
+    return rows.map(row => ({
+      name: row.querySelector('.mod-name').value.trim() || 'Modifier',
+      charat: row.querySelector('.mod-charat').value,
+      activeWhen: row.querySelector('.mod-activewhen').value,
+      has: row.querySelector('.mod-has').value,
+      amount: row.querySelector('.mod-amount').value.trim() || '+3SL'
+    }));
+  }
+
+  function setInputsDisabled(disabled){
+    document.querySelectorAll('#roster1 input, #roster1 select, #roster2 input, #roster2 select, #team1Name, #team2Name').forEach(i => { i.disabled = disabled; });
+    document.querySelectorAll('.m-remove').forEach(b => { b.disabled = disabled; });
+    document.querySelectorAll('.actions-btn, .actions-add-btn, .action-remove, .action-move-up, .action-move-down').forEach(b => { b.disabled = disabled; });
+    document.querySelectorAll('.modifiers-btn, .modifiers-add-btn, .modifier-remove, .modifier-move-up, .modifier-move-down').forEach(b => { b.disabled = disabled; });
+    el('addMember1').disabled = disabled;
+    el('addMember2').disabled = disabled;
+    el('addPresetBtn1').disabled = disabled;
+    if(disabled) closeAllPresetMenus();
+  }
+
+  // ---- Logica di combattimento ----
+
+  // Scala delle portate delle armi, dalla più corta alla più lunga.
+  const REACH_ORDER = { very_short: 0, short: 1, average: 2, long: 3, very_long: 4 };
+  const REACH_LABELS = { very_short: 'very short', short: 'short', average: 'average', long: 'long', very_long: 'very long' };
+
+  function reachRank(reach){
+    return REACH_ORDER.hasOwnProperty(reach) ? REACH_ORDER[reach] : REACH_ORDER.average;
+  }
+
+  // Valuta se un singolo Modificatore è attivo in questo momento, dato il
+  // personaggio che lo possiede (char), il suo avversario in questo
+  // scambio (opponent), l'azione in corso e se si sta valutando il tiro
+  // dell'attaccante (isAttackRoll = true) o quello del difensore in
+  // parata (isAttackRoll = false).
+  function isModifierActive(mod, char, opponent, action, isAttackRoll){
+    switch(mod.activeWhen){
+      case 'parry': return !isAttackRoll;
+      case 'attack': return isAttackRoll;
+      case 'ownTurn': return isAttackRoll;
+      case 'opposedType': return !!action && (action.type === 'opposed' || action.type === 'touch');
+      case 'testType': return !!action && (action.type === 'test' || action.type === 'touch');
+      case 'halfHpSelf': return char.hpMax > 0 && char.hp <= char.hpMax / 2;
+      case 'halfHpEnemy': return !!opponent && opponent.hpMax > 0 && opponent.hp <= opponent.hpMax / 2;
+      case 'firstTurn': return state.round === 1;
+      default: return false;
+    }
+  }
+
+  // Interpreta il valore testuale del campo "Modificatore" di un
+  // Modificatore. Due formati sono supportati:
+  // - un numero semplice, anche con segno (es. "10", "-5"): è un bonus
+  //   diretto sommato al valore grezzo della caratteristica, prima che
+  //   se ne calcoli la decina per il tiro (stesso comportamento di
+  //   sempre, es. per la Portata di uno scudo sul Weapon Skill);
+  // - una notazione con "LS" (es. "+3LS", "3LS", "LS+3", "-2LS"): non
+  //   tocca la caratteristica, ma somma (o sottrae) direttamente
+  //   all'LS totale ottenuto dal tiro di quella caratteristica.
+  // Un valore non riconosciuto viene trattato come un bonus nullo.
+  function parseModifierAmount(raw){
+    const str = String(raw == null ? '' : raw).trim();
+    if(str === '') return { mode: 'flat', value: 0 };
+    let m = /^([+-]?\d+)\s*sl$/i.exec(str);
+    if(m) return { mode: 'ls', value: parseInt(m[1], 10) || 0 };
+    m = /^sl\s*([+-]?\d+)$/i.exec(str);
+    if(m) return { mode: 'ls', value: parseInt(m[1], 10) || 0 };
+    m = /^[+-]?\d+$/.exec(str);
+    if(m) return { mode: 'flat', value: parseInt(str, 10) || 0 };
+    return { mode: 'flat', value: 0 };
+  }
+
+  // Somma i bonus "flat" (diretti sulla caratteristica) di tutti i
+  // Modificatori di un personaggio che puntano alla caratteristica
+  // indicata (charKey) e il cui criterio "Attivo quando" è soddisfatto.
+  function flatModifierBonus(char, charKey, opponent, action, isAttackRoll){
+    if(!char.modifiers || !char.modifiers.length) return 0;
+    let total = 0;
+    char.modifiers.forEach(mod => {
+      if(mod.charat !== charKey) return;
+      const parsed = parseModifierAmount(mod.amount);
+      if(parsed.mode !== 'flat') return;
+      if(isModifierActive(mod, char, opponent, action, isAttackRoll)) total += parsed.value;
+    });
+    return total;
+  }
+
+  // Somma i bonus "LS" (applicati direttamente all'esito del tiro, non
+  // alla caratteristica) di tutti i Modificatori di un personaggio che
+  // puntano alla caratteristica indicata (charKey) e il cui criterio
+  // "Attivo quando" è soddisfatto.
+  function lsModifierBonus(char, charKey, opponent, action, isAttackRoll){
+    if(!char.modifiers || !char.modifiers.length) return 0;
+    let total = 0;
+    char.modifiers.forEach(mod => {
+      if(mod.charat !== charKey) return;
+      const parsed = parseModifierAmount(mod.amount);
+      if(parsed.mode !== 'ls') return;
+      if(isModifierActive(mod, char, opponent, action, isAttackRoll)) total += parsed.value;
+    });
+    return total;
+  }
+
+  // Come lsModifierBonus, ma restituisce l'elenco dettagliato (nome del
+  // Modificatore + valore) invece della sola somma: usato in cronaca per
+  // mostrare esplicitamente quali Modificatori hanno dato +LS/-LS su
+  // questo tiro, invece di nasconderli dentro il totale.
+  function lsModifierBreakdown(char, charKey, opponent, action, isAttackRoll){
+    if(!char.modifiers || !char.modifiers.length) return [];
+    const list = [];
+    char.modifiers.forEach(mod => {
+      if(mod.charat !== charKey) return;
+      const parsed = parseModifierAmount(mod.amount);
+      if(parsed.mode !== 'ls') return;
+      if(isModifierActive(mod, char, opponent, action, isAttackRoll)){
+        list.push({ name: mod.name || 'Modifier', value: parsed.value });
+      }
+    });
+    return list;
+  }
+
+  // Restituisce la Portata "impugnata" in questo momento da un personaggio:
+  // quella dell'ultima azione che ha effettivamente usato in battaglia,
+  // oppure - se non ha ancora agito - quella della sua prima azione
+  // disponibile (la sua "arma di riserva").
+  function currentReach(char){
+    const action = char.currentAction || (char.actions && char.actions[0]);
+    return action ? action.reach : 'average';
+  }
+
+  // Bonus di portata: chi si difende con l'arma più lunga di quella usata
+  // dall'attaccante in questa specifica azione ottiene +10 al proprio
+  // Weapon Skill solo per quel tiro difensivo, perché riesce a tenerlo a
+  // distanza.
+  function reachDefenseBonus(defender, attackAction){
+    return reachRank(currentReach(defender)) > reachRank(attackAction ? attackAction.reach : 'average') ? 10 : 0;
+  }
+
+  // Calcola la differenza tra l'LS del vincitore e quello del perdente
+  function lsDifference(winnerLS, loserLS){
+    if(winnerLS >= 0 && loserLS >= 0){
+      return winnerLS - loserLS;
+    }
+    if(winnerLS >= 0 && loserLS < 0){
+      return winnerLS + Math.abs(loserLS);
+    }
+    return Math.abs(loserLS) - Math.abs(winnerLS);
+  }
+
+  // Sceglie il bersaglio tra i nemici vivi secondo il Target dell'azione
+  // usata (che ha sostituito la vecchia caratteristica "Bersaglio" globale).
+  function chooseTargetForAction(action, enemyTeam){
+    const alive = enemyTeam.filter(c => c.hp > 0);
+    if(alive.length === 0) return null;
+    const strategy = action && action.target;
+    if(strategy === 'highest'){
+      return alive.reduce((best, c) => c.hp > best.hp ? c : best);
+    }
+    if(strategy === 'lowest'){
+      return alive.reduce((best, c) => c.hp < best.hp ? c : best);
+    }
+    return alive[Math.floor(Math.random() * alive.length)];
+  }
+
+  // Traccia, per ogni azione di un personaggio, se è già stata usata e a
+  // quale "turno" (proprio del personaggio, vedi attacker.actsCount) è
+  // stata usata l'ultima volta: serve ai criteri "Non ancora usata" e
+  // "Ogni 2 turni" del menù "Usa questa azione se:".
+  function ensureActionRuntime(attacker, actions){
+    if(!attacker.actionRuntime || attacker.actionRuntime.length !== actions.length){
+      attacker.actionRuntime = actions.map(() => ({ used: false, lastUsedTurn: 0 }));
+    }
+    return attacker.actionRuntime;
+  }
+
+  // Valuta se il criterio "Usa questa azione se:" di una singola azione è
+  // soddisfatto in questo momento. Il criterio "Default" non viene mai
+  // valutato qui: va usato solo come ripiego quando nessun'altra azione
+  // ha un criterio soddisfatto (vedi chooseActionForTurn).
+  function isActionConditionMet(action, runtime, attacker, enemyTeam){
+    switch(action.useIf){
+      case 'unused':
+        return !runtime.used;
+      case 'every2':
+        return runtime.lastUsedTurn === 0 || (attacker.actsCount - runtime.lastUsedTurn) >= 2;
+      case 'momentum':
+        return !!attacker.momentum;
+      case 'targetStatus': {
+        const target = chooseTargetForAction(action, enemyTeam);
+        if(!target) return false;
+        if(!action.onHit || action.onHit === 'no') return true;
+        return !hasStatus(target, action.onHit);
+      }
+      default:
+        return false;
+    }
+  }
+
+  // Sceglie l'UNICA azione che il personaggio compie nel proprio turno
+  // (un personaggio ha sempre al massimo un'azione per turno, anche se
+  // quell'azione colpisce più volte tramite Colpi/round). Le azioni
+  // vengono valutate nell'ordine in cui sono elencate nella finestra
+  // Azioni: la prima il cui criterio "Usa questa azione se:" è
+  // soddisfatto viene scelta; se nessuna lo è, si ricorre alla prima
+  // azione marcata "Default"; se non c'è nemmeno quella, si usa comunque
+  // la prima azione della lista, per non lasciare il personaggio inerte.
+  function chooseActionForTurn(attacker, actions, enemyTeam){
+    const runtimes = ensureActionRuntime(attacker, actions);
+    for(let i = 0; i < actions.length; i++){
+      if(actions[i].useIf === 'default') continue;
+      if(isActionConditionMet(actions[i], runtimes[i], attacker, enemyTeam)) return { action: actions[i], index: i };
+    }
+    for(let i = 0; i < actions.length; i++){
+      if(actions[i].useIf === 'default') return { action: actions[i], index: i };
+    }
+    return { action: actions[0], index: 0 };
+  }
+
+  // Tira i dadi di danno indicati da un'azione, es. "1d10" o "2d6"
+  // (NdM: N dadi da M facce, tipicamente 4/6/8/10/12), oppure interpreta
+  // il campo come un valore di danno fisso se contiene solo un numero
+  // intero (es. "4"), utile per danni senza tiro di dado.
+  function rollDiceNotation(notation){
+    const str = String(notation || '').trim();
+
+    const diceMatch = /^(\d+)\s*d\s*(\d+)$/i.exec(str);
+    if(diceMatch){
+      const count = Math.max(1, Math.min(20, parseInt(diceMatch[1], 10)));
+      const sides = Math.max(1, Math.min(100, parseInt(diceMatch[2], 10)));
+      const rolls = [];
+      let total = 0;
+      for(let i = 0; i < count; i++){
+        const r = 1 + Math.floor(Math.random() * sides);
+        rolls.push(r);
+        total += r;
+      }
+      return { total, rolls, count, sides, valid: true, fixed: false };
+    }
+
+    const fixedMatch = /^-?\d+$/.exec(str);
+    if(fixedMatch){
+      const value = parseInt(str, 10);
+      return { total: value, rolls: [], count: 0, sides: 0, valid: true, fixed: true };
+    }
+
+    return { total: 0, rolls: [], count: 0, sides: 0, valid: false, fixed: false };
+  }
+
+  // Valuta la formula del campo Damage delle azioni di Tipo "Test",
+  // supportando termini separati da + o -: dadi in notazione NdM, numeri
+  // fissi, e la voce "LS"/"Ls"/"ls" (case-insensitive), che viene
+  // sostituita con l'LS ottenuto dal check stesso (decina della soglia
+  // meno decina del tiro, penalità di status incluse). Esempi validi:
+  // "Ls+0", "LS+2", "2d6+LS", "1d10-LS". Se la formula non contiene
+  // alcun riferimento a LS, il comportamento coincide con il semplice
+  // tiro di dadi/valore fisso di rollDiceNotation.
+  function rollTestDamageFormula(notation, lsValue){
+    const str = String(notation || '').trim();
+    if(!str) return { total: 0, valid: false, terms: [], raw: str };
+
+    const normalized = str.replace(/\s+/g, '');
+    const tokenMatches = normalized.match(/[+-]?[^+-]+/g);
+    if(!tokenMatches) return { total: 0, valid: false, terms: [], raw: str };
+
+    let total = 0;
+    let valid = true;
+    const terms = [];
+
+    for(const raw of tokenMatches){
+      let sign = 1;
+      let tok = raw;
+      if(tok[0] === '+'){
+        tok = tok.slice(1);
+      } else if(tok[0] === '-'){
+        sign = -1;
+        tok = tok.slice(1);
+      }
+      if(tok === ''){ valid = false; continue; }
+
+      if(/^sl$/i.test(tok)){
+        const value = sign * lsValue;
+        total += value;
+        terms.push({ kind: 'ls', sign, value, lsValue });
+        continue;
+      }
+
+      const diceMatch = /^(\d+)d(\d+)$/i.exec(tok);
+      if(diceMatch){
+        const count = Math.max(1, Math.min(20, parseInt(diceMatch[1], 10)));
+        const sides = Math.max(1, Math.min(100, parseInt(diceMatch[2], 10)));
+        const rolls = [];
+        let sum = 0;
+        for(let i = 0; i < count; i++){
+          const r = 1 + Math.floor(Math.random() * sides);
+          rolls.push(r);
+          sum += r;
+        }
+        const value = sign * sum;
+        total += value;
+        terms.push({ kind: 'dice', sign, count, sides, rolls, sum, value });
+        continue;
+      }
+
+      const fixedMatch = /^\d+$/.exec(tok);
+      if(fixedMatch){
+        const value = sign * parseInt(tok, 10);
+        total += value;
+        terms.push({ kind: 'fixed', sign, value });
+        continue;
+      }
+
+      valid = false;
+    }
+
+    return { total, valid, terms, raw: str };
+  }
+
+  // Applica il vantaggio da Momentum a un tiro: inverte decina e unità del
+  // risultato, ma solo se l'inversione produce un tiro più basso (che è
+  // sempre un vantaggio, dato che LS = decina(WS) - decina(tiro)).
+  function applyMomentum(rawRoll, hasMomentum){
+    if(!hasMomentum) return { roll: rawRoll, swapped: false, raw: rawRoll };
+    const tens = Math.floor(rawRoll / 10);
+    const units = rawRoll % 10;
+    const swapped = units * 10 + tens;
+    if(swapped < rawRoll){
+      return { roll: swapped, swapped: true, raw: rawRoll };
+    }
+    return { roll: rawRoll, swapped: false, raw: rawRoll };
+  }
+
+  // ---- Gestione degli Status ----
+
+  function hasStatus(char, key){
+    return !!(char && char.statuses && char.statuses[key] > 0);
+  }
+
+  // Applica uno status a un personaggio: se lo status è stackabile
+  // aggiunge un nuovo segno/stack, altrimenti lo porta (o mantiene) a 1.
+  // Subire uno status fa sempre perdere il Momentum, indipendentemente
+  // da come lo status è stato inflitto.
+  function applyStatus(char, key){
+    if(!key || key === 'no' || !STATUS_DEFS[key]) return null;
+    if(!char.statuses) char.statuses = {};
+    const def = STATUS_DEFS[key];
+    const before = char.statuses[key] || 0;
+    char.statuses[key] = def.stackable ? before + 1 : 1;
+    let stunnedKnockout = false;
+    if(key === 'stunned'){
+      const toughnessTens = decina(char.tough || 0);
+      if(char.statuses.stunned > toughnessTens){
+        char.hp = 0;
+        stunnedKnockout = true;
+      }
+    }
+    if(state.momentumOn) char.momentum = false;
+    return { key, before, after: char.statuses[key], stunnedKnockout };
+  }
+
+  // Penalità di LS (-1 per stack/segno) dovuta agli status attivi:
+  // Stunned e Poisoned contano per stack, Fatigued ed Entangled -1 fisso.
+  function statusLsPenalty(char){
+    const s = (char && char.statuses) || {};
+    let penalty = 0;
+    penalty += s.stunned || 0;
+    penalty += s.poisoned || 0;
+    if(s.fatigued) penalty += 1;
+    if(s.entangled) penalty += 1;
+    return penalty;
+  }
+
+  // Generalizza applyMomentum a vantaggio/svantaggio da qualunque fonte:
+  // vantaggio e svantaggio provenienti da fonti diverse sullo stesso tiro
+  // si annullano a vicenda (tiro normale). Il vantaggio inverte decina e
+  // unità solo se il risultato migliora (scende); lo svantaggio solo se
+  // il risultato peggiora (sale).
+  function applyRollModifiers(rawRoll, hasAdvantage, hasDisadvantage){
+    if(hasAdvantage && hasDisadvantage){
+      return { roll: rawRoll, swapped: false, raw: rawRoll };
+    }
+    const tens = Math.floor(rawRoll / 10);
+    const units = rawRoll % 10;
+    const swapped = units * 10 + tens;
+    if(hasAdvantage && swapped < rawRoll){
+      return { roll: swapped, swapped: true, raw: rawRoll };
+    }
+    if(hasDisadvantage && swapped > rawRoll){
+      return { roll: swapped, swapped: true, raw: rawRoll };
+    }
+    return { roll: rawRoll, swapped: false, raw: rawRoll };
+  }
+
+  // Calcola, per un singolo tiro (identificato dal personaggio che tira,
+  // la caratteristica usata come soglia di quel tiro, l'avversario, l'azione
+  // e se è un tiro d'attacco o di difesa), quali e quante fonti di vantaggio
+  // e di svantaggio sono attive su quel tiro. extraAdvantage/extraDisadvantage
+  // sono array di { active, label }: le condizioni "fisse" già esistenti
+  // (Momentum, Prone, Blinded, ecc.), tenute distinte l'una dall'altra così
+  // da poterle contare singolarmente e da poterle citare per nome in
+  // cronaca. A queste si aggiungono i Modificatori con "Has:
+  // Advantage/Disadvantage" attivi sulla stessa caratteristica, citati con
+  // il loro nome.
+  //
+  // Regola del cumulo: se le fonti di vantaggio sono 2 o più, oltre
+  // all'inversione decina/unità (se migliora il tiro) si ottiene anche un
+  // bonus fisso di +1 LS; stessa cosa in negativo per lo svantaggio (-1 LS)
+  // con 2 o più fonti. Se sono presenti sia vantaggio che svantaggio sullo
+  // stesso tiro (qualunque sia il numero di fonti da ciascun lato), si
+  // annullano del tutto: il tiro è normale, senza inversione né bonus/malus.
+  function rollAdvantageInfo(char, key, opponent, action, isAttackRoll, extraAdvantage, extraDisadvantage){
+    const advSources = (extraAdvantage || []).filter(s => s && s.active).map(s => s.label);
+    const disSources = (extraDisadvantage || []).filter(s => s && s.active).map(s => s.label);
+    if(char && char.modifiers && char.modifiers.length){
+      char.modifiers.forEach(mod => {
+        if(mod.charat !== key) return;
+        if(!isModifierActive(mod, char, opponent, action, isAttackRoll)) return;
+        if(mod.has === 'advantage') advSources.push(mod.name || 'Modifier');
+        else if(mod.has === 'disadvantage') disSources.push(mod.name || 'Modifier');
+      });
+    }
+    const advCount = advSources.length;
+    const disCount = disSources.length;
+    const advantage = advCount > 0 && disCount === 0;
+    const disadvantage = disCount > 0 && advCount === 0;
+    let lsBonus = 0;
+    if(advantage && advCount >= 2) lsBonus = 1;
+    else if(disadvantage && disCount >= 2) lsBonus = -1;
+    return { advantage, disadvantage, lsBonus, advCount, disCount, advSources, disSources };
+  }
+
+  // Test di Toughness usato da Stunned e Poisoned a fine round: si tira
+  // 1d100 e si supera il test se il risultato è inferiore a Toughness;
+  // l'LS del test (decina di Toughness meno decina del tiro) determina
+  // quanti stack vengono rimossi in caso di successo (LS + 1).
+  function toughnessTest(char){
+    const roll = rollDie();
+    const tough = char.tough;
+    const success = roll < tough;
+    const ls = decina(tough) - decina(roll) - statusLsPenalty(char);
+    return { roll, success, ls };
+  }
+
+  // Risolve gli effetti di fine round per un singolo personaggio ancora
+  // in vita: danni non mitigati di Bleeding e Poisoned, danno mitigato di
+  // Ablaze, e i test di Toughness di Poisoned e Stunned (che rimuovono
+  // stack in caso di successo; Stunned, se azzerato, lascia Fatigued).
+  function resolveRoundEndStatusesFor(c){
+    const notes = [];
+    if(c.hp <= 0) return notes;
+    if(!c.statuses) c.statuses = {};
+    const s = c.statuses;
+
+    if(s.bleeding > 0){
+      c.hp -= s.bleeding;
+      notes.push(`${c.name} loses ${s.bleeding} HP from bleeding (Bleeding).`);
+    }
+
+    if(s.poisoned > 0){
+      c.hp -= s.poisoned;
+      notes.push(`${c.name} loses ${s.poisoned} HP from poison (Poisoned).`);
+      if(c.hp > 0){
+        const test = toughnessTest(c);
+        if(test.success){
+          const removed = Math.max(0, Math.min(s.poisoned, test.ls + 1));
+          s.poisoned = Math.max(0, s.poisoned - removed);
+          notes.push(`${c.name} passes the Toughness test against the poison (rolls ${test.roll} vs ${c.tough}) and removes ${removed} stack(s) of Poisoned.`);
+        } else {
+          notes.push(`${c.name} fails the Toughness test against the poison (rolls ${test.roll} vs ${c.tough}).`);
+        }
+      }
+    }
+
+    if(c.hp > 0 && s.ablaze > 0){
+      const roll = rollDiceNotation('1d10');
+      const extra = s.ablaze - 1;
+      const total = roll.total + extra;
+      const mitigation = c.armor;
+      const dmg = Math.max(1, total - mitigation);
+      c.hp -= dmg;
+      notes.push(`${c.name} burns (Ablaze x${s.ablaze}): ${total} damage − ${mitigation} mitigation = ${dmg} damage.`);
+    }
+
+    if(c.hp > 0 && s.stunned > 0){
+      const test = toughnessTest(c);
+      if(test.success){
+        const removed = Math.max(0, Math.min(s.stunned, test.ls + 1));
+        s.stunned = Math.max(0, s.stunned - removed);
+        notes.push(`${c.name} passes the Toughness test against the stun (rolls ${test.roll} vs ${c.tough}) and removes ${removed} stack(s) of Stunned.`);
+        if(s.stunned <= 0){
+          applyStatus(c, 'fatigued');
+          notes.push(`${c.name} is now Fatigued.`);
+        }
+      } else {
+        notes.push(`${c.name} fails the Toughness test against the stun (rolls ${test.roll} vs ${c.tough}).`);
+      }
+    }
+
+    return notes;
+  }
+
+  // Applica gli effetti di fine round a tutti i personaggi vivi di
+  // entrambe le squadre e restituisce l'elenco dei messaggi da mostrare
+  // in cronaca (usato dalla battaglia interattiva; ignorato, ma comunque
+  // applicato meccanicamente, dalla simulazione massiva).
+  function processRoundEndStatuses(team1, team2){
+    const notes = [];
+    [...team1, ...team2].forEach(c => {
+      notes.push(...resolveRoundEndStatusesFor(c));
+    });
+    return notes;
+  }
+
+  function resolveTurn(attacker, defender, action){
+    const momentumOn = state.momentumOn;
+    const attackerHadMomentum = momentumOn && !!attacker.momentum;
+    const defenderHadMomentum = momentumOn && !!defender.momentum;
+
+    // Soglia è la caratteristica usata per il Test.
+    // Yours è la caratteristica dell'attaccante usata nel tiro Opposed.
+    const statKey = (action && action.statKey) || 'ws';
+    const yoursStatKey = (action && action.yoursStatKey) || statKey || 'ws';
+    const isTest = action && action.type === 'test';
+    const isTouchSpell = action && action.type === 'touch';
+
+    const actionIsMelee = !action || action.isMelee !== 'no';
+    // Fonti di vantaggio "fisse" sull'attacco, tenute separate (e non più
+    // riunite in un unico OR) in modo da poterle contare singolarmente e
+    // da poterle etichettare correttamente in cronaca (Momentum, Prone,
+    // Blinded sono fonti distinte anche se numericamente danno lo stesso
+    // effetto su un singolo tiro).
+    const momentumAttackAdvantage = attackerHadMomentum && actionIsMelee;
+    const proneAttackAdvantage = hasStatus(defender, 'prone');
+    const blindedAttackAdvantage = hasStatus(defender, 'blinded');
+    const attackAdvantageSources = [
+      { active: momentumAttackAdvantage, label: 'Momentum' },
+      { active: proneAttackAdvantage, label: 'Prone' },
+      { active: blindedAttackAdvantage, label: 'Blinded' }
+    ];
+    let rollInfoA = null, rollInfoY = null, rollInfoD = null;
+    let lsBreakdownA = [], lsBreakdownY = [], lsBreakdownD = [];
+
+    const toHitMod = (action && action.toHitMod) || 0;
+
+    let hit = false, lsDiff = 0, damage = 0, damageRoll = null, damageStatBonus = 0, statusApplied = null;
+    let rollA = null, rollY = null, rollD = null;
+    let rawRollA = null, rawRollY = null, rawRollD = null;
+    let momentumSwapA = false, momentumSwapY = false, momentumSwapD = false;
+    let lsA = null, lsY = null, lsD = null;
+    let reachBonusD = 0, testThreshold = null;
+    let vsStatKey = null;
+    let testSuccess = null, opposedSuccess = null;
+
+    function getEffectiveStat(char, key, opponent, currentAction, isAttackRoll){
+      const base = typeof char[key] === 'number' ? char[key] : char.ws;
+      return base + toHitMod + flatModifierBonus(char, key, opponent, currentAction, isAttackRoll);
+    }
+
+    function getLs(char, key, effectiveStat, roll, opponent, currentAction, isAttackRoll, advantageLsBonus){
+      return decina(effectiveStat) - decina(roll) - statusLsPenalty(char) + lsModifierBonus(char, key, opponent, currentAction, isAttackRoll) + (advantageLsBonus || 0);
+    }
+
+    function rollTouchSpellDamageFormula(notation, lsValue){
+      const raw = String(notation || '').trim();
+      // Per Touch spell l'LS è ignorato salvo che la textbox contenga
+      // esplicitamente "+LS". In quel caso si usa l'LS del primo Test
+      // (Soglia), mai quello del tiro Opposed.
+      const explicitPlusLs = /\+sl(?:\b|$)/i.test(raw.replace(/\s+/g, ''));
+      return rollTestDamageFormula(raw, explicitPlusLs ? lsValue : 0);
+    }
+
+    function applyActionDamage(lsForDamage, includeLsDiff){
+      damageRoll = isTouchSpell
+        ? rollTouchSpellDamageFormula(action && action.damageDice, lsForDamage)
+        : rollTestDamageFormula(action && action.damageDice, lsForDamage);
+      // Per le azioni Opposed normali, LS del confronto viene aggiunto al danno.
+      // Per Test e Touch spell si usa invece esplicitamente la formula Damage;
+      // nel Touch spell l'LS del confronto Opposed non viene mai aggiunto.
+      if(includeLsDiff){
+        const rawTotal = damageRoll.total + lsDiff;
+        damageRoll.total = rawTotal;
+      }
+      const dmgStatKey = action && action.damageStatKey;
+      if(dmgStatKey && dmgStatKey !== 'none' && typeof attacker[dmgStatKey] === 'number'){
+        damageStatBonus = decina(attacker[dmgStatKey]);
+      }
+      const effectiveArmor = defender.armor + flatModifierBonus(defender, 'armor', attacker, action, false);
+      damage = Math.max(1, damageRoll.total + damageStatBonus - effectiveArmor);
+      defender.hp -= damage;
+
+      const onHitKey = action && action.onHit;
+      if(onHitKey && onHitKey !== 'no'){
+        statusApplied = applyStatus(defender, onHitKey);
+      }
+    }
+
+    if(isTest || isTouchSpell){
+      // Prima prova: Test sulla Soglia.
+      const testEffectiveStat = getEffectiveStat(attacker, statKey, defender, action, true);
+      const testInfo = rollAdvantageInfo(attacker, statKey, defender, action, true, attackAdvantageSources, [
+        { active: hasStatus(attacker, 'blinded') && statKey === 'ws', label: 'Blinded' }
+      ]);
+      rollInfoA = testInfo;
+      lsBreakdownA = lsModifierBreakdown(attacker, statKey, defender, action, true);
+      const rTest = applyRollModifiers(rollDie(), testInfo.advantage, testInfo.disadvantage);
+      rollA = rTest.roll;
+      rawRollA = rTest.raw;
+      momentumSwapA = rTest.swapped;
+      testThreshold = testEffectiveStat;
+      testSuccess = rollA < testThreshold;
+      lsA = getLs(attacker, statKey, testEffectiveStat, rollA, defender, action, true, testInfo.lsBonus);
+
+      if(isTest){
+        hit = testSuccess;
+        if(hit){
+          // Il danno del Test può usare LS nella formula, se richiesto.
+          damageRoll = rollTouchSpellDamageFormula(action && action.damageDice, lsA);
+          const dmgStatKey = action && action.damageStatKey;
+          if(dmgStatKey && dmgStatKey !== 'none' && typeof attacker[dmgStatKey] === 'number'){
+            damageStatBonus = decina(attacker[dmgStatKey]);
+          }
+          const effectiveArmor = defender.armor + flatModifierBonus(defender, 'armor', attacker, action, false);
+          damage = Math.max(1, damageRoll.total + damageStatBonus - effectiveArmor);
+          defender.hp -= damage;
+          const onHitKey = action && action.onHit;
+          if(onHitKey && onHitKey !== 'no') statusApplied = applyStatus(defender, onHitKey);
+        }
+      } else {
+        // Seconda prova: Opposed. Qui l'attaccante tira con Yours e il difensore con Vs.
+        const yoursEffectiveStat = getEffectiveStat(attacker, yoursStatKey, defender, action, true);
+        const yoursInfo = rollAdvantageInfo(attacker, yoursStatKey, defender, action, true, attackAdvantageSources, [
+          { active: hasStatus(attacker, 'blinded') && yoursStatKey === 'ws', label: 'Blinded' }
+        ]);
+        rollInfoY = yoursInfo;
+        lsBreakdownY = lsModifierBreakdown(attacker, yoursStatKey, defender, action, true);
+        const rYours = applyRollModifiers(rollDie(), yoursInfo.advantage, yoursInfo.disadvantage);
+        rollY = rYours.roll;
+        rawRollY = rYours.raw;
+        momentumSwapY = rYours.swapped;
+        lsY = getLs(attacker, yoursStatKey, yoursEffectiveStat, rollY, defender, action, true, yoursInfo.lsBonus);
+
+        vsStatKey = (action && action.vsStatKey) || 'ws';
+        const defenseInfo = rollAdvantageInfo(defender, vsStatKey, attacker, action, false,
+          [{ active: defenderHadMomentum, label: 'Momentum' }],
+          [{ active: hasStatus(defender, 'blinded'), label: 'Blinded' }]
+        );
+        rollInfoD = defenseInfo;
+        lsBreakdownD = lsModifierBreakdown(defender, vsStatKey, attacker, action, false);
+        const rD = applyRollModifiers(rollDie(), defenseInfo.advantage, defenseInfo.disadvantage);
+        rollD = rD.roll;
+        rawRollD = rD.raw;
+        momentumSwapD = rD.swapped;
+
+        reachBonusD = reachDefenseBonus(defender, action);
+        const defenderStatValue = typeof defender[vsStatKey] === 'number' ? defender[vsStatKey] : defender.ws;
+        const defenderModBonus = flatModifierBonus(defender, vsStatKey, attacker, action, false);
+        const defenderLsModBonus = lsModifierBonus(defender, vsStatKey, attacker, action, false);
+        lsD = decina(defenderStatValue + reachBonusD + defenderModBonus) - decina(rollD) - statusLsPenalty(defender) + defenderLsModBonus + defenseInfo.lsBonus;
+
+        opposedSuccess = lsY > lsD;
+        hit = testSuccess && opposedSuccess;
+        // Per Touch spell gli LS dell'Opposed non entrano nel danno.
+        lsDiff = 0;
+
+        if(hit){
+          damageRoll = rollTestDamageFormula(action && action.damageDice, lsA);
+          const dmgStatKey = action && action.damageStatKey;
+          if(dmgStatKey && dmgStatKey !== 'none' && typeof attacker[dmgStatKey] === 'number'){
+            damageStatBonus = decina(attacker[dmgStatKey]);
+          }
+          const effectiveArmor = defender.armor + flatModifierBonus(defender, 'armor', attacker, action, false);
+          damage = Math.max(1, damageRoll.total + damageStatBonus - effectiveArmor);
+          defender.hp -= damage;
+          const onHitKey = action && action.onHit;
+          if(onHitKey && onHitKey !== 'no') statusApplied = applyStatus(defender, onHitKey);
+        }
+      }
+    } else {
+      // Opposed normale: Yours vs Vs. La Soglia non interviene.
+      const yoursEffectiveStat = getEffectiveStat(attacker, yoursStatKey, defender, action, true);
+      const attackInfo = rollAdvantageInfo(attacker, yoursStatKey, defender, action, true, attackAdvantageSources, [
+        { active: hasStatus(attacker, 'blinded') && yoursStatKey === 'ws', label: 'Blinded' }
+      ]);
+      rollInfoA = attackInfo;
+      lsBreakdownA = lsModifierBreakdown(attacker, yoursStatKey, defender, action, true);
+      const rYours = applyRollModifiers(rollDie(), attackInfo.advantage, attackInfo.disadvantage);
+      rollA = rYours.roll;
+      rawRollA = rYours.raw;
+      momentumSwapA = rYours.swapped;
+      lsA = getLs(attacker, yoursStatKey, yoursEffectiveStat, rollA, defender, action, true, attackInfo.lsBonus);
+
+      vsStatKey = (action && action.vsStatKey) || 'ws';
+      const defenseInfo = rollAdvantageInfo(defender, vsStatKey, attacker, action, false,
+        [{ active: defenderHadMomentum, label: 'Momentum' }],
+        [{ active: hasStatus(defender, 'blinded'), label: 'Blinded' }]
+      );
+      rollInfoD = defenseInfo;
+      lsBreakdownD = lsModifierBreakdown(defender, vsStatKey, attacker, action, false);
+      const rD = applyRollModifiers(rollDie(), defenseInfo.advantage, defenseInfo.disadvantage);
+      rollD = rD.roll;
+      rawRollD = rD.raw;
+      momentumSwapD = rD.swapped;
+
+      reachBonusD = reachDefenseBonus(defender, action);
+      const defenderStatValue = typeof defender[vsStatKey] === 'number' ? defender[vsStatKey] : defender.ws;
+      const defenderModBonus = flatModifierBonus(defender, vsStatKey, attacker, action, false);
+      const defenderLsModBonus = lsModifierBonus(defender, vsStatKey, attacker, action, false);
+      lsD = decina(defenderStatValue + reachBonusD + defenderModBonus) - decina(rollD) - statusLsPenalty(defender) + defenderLsModBonus + defenseInfo.lsBonus;
+
+      if(lsA > lsD){
+        hit = true;
+        lsDiff = lsDifference(lsA, lsD);
+        damageRoll = rollDiceNotation(action && action.damageDice);
+        const dmgStatKey = action && action.damageStatKey;
+        if(dmgStatKey && dmgStatKey !== 'none' && typeof attacker[dmgStatKey] === 'number'){
+          damageStatBonus = decina(attacker[dmgStatKey]);
+        }
+        const effectiveArmor = defender.armor + flatModifierBonus(defender, 'armor', attacker, action, false);
+        damage = Math.max(1, damageRoll.total + damageStatBonus + lsDiff - effectiveArmor);
+        defender.hp -= damage;
+        const onHitKey = action && action.onHit;
+        if(onHitKey && onHitKey !== 'no') statusApplied = applyStatus(defender, onHitKey);
+      }
+    }
+
+    // Momentum: si guadagna con un Opposed normale + Melee, oppure con un
+    // Touch spell + Melee che va a segno (superando sia il Test sulla
+    // Soglia sia l'Opposed Yours/Vs). Le azioni di Tipo Test puro non
+    // danno mai Momentum, perché non prevedono alcun confronto Opposed.
+    let attackerGainedMomentum = false, attackerLostMomentum = false;
+    let defenderLostMomentum = false;
+    if(momentumOn){
+      const canGainMomentum = !isTest && actionIsMelee;
+      const hadDefenseRoll = !!rollD;
+      if(hit){
+        if(canGainMomentum){
+          if(!attacker.momentum) attackerGainedMomentum = true;
+          attacker.momentum = true;
+        }
+        if(hadDefenseRoll){
+          if(defender.momentum) defenderLostMomentum = true;
+          defender.momentum = false;
+        }
+      } else {
+        if(attacker.momentum) attackerLostMomentum = true;
+        attacker.momentum = false;
+      }
+    }
+
+    return {
+      rollA, rollY, rollD,
+      lsA, lsY, lsD, lsDiff,
+      hit, damage, attacker, defender, action,
+      actionName: (action && action.name) || 'Attacco',
+      statKey, yoursStatKey, vsStatKey, toHitMod, damageRoll, damageStatBonus,
+      momentumOn,
+      rawRollA, rawRollY, rawRollD,
+      momentumSwapA, momentumSwapY, momentumSwapD,
+      attackerHadMomentum, defenderHadMomentum,
+      attackerGainedMomentum, attackerLostMomentum, defenderLostMomentum,
+      reachBonusD, statusApplied,
+      isTest, isTouchSpell, testThreshold,
+      testSuccess, opposedSuccess,
+      rollInfoA, rollInfoY, rollInfoD,
+      lsBreakdownA, lsBreakdownY, lsBreakdownD
+    };
+  }
+
+  // Esegue un round completo: agisce, in ordine di Iniziativa decrescente,
+  // ogni combattente ancora vivo di entrambe le squadre, scegliendo il
+  // proprio bersaglio secondo la strategia impostata. Chi ha più di un
+  // attacco (N. Attacchi) colpisce più volte nel proprio turno, scegliendo
+  // di nuovo il bersaglio ad ogni colpo (può cambiare se il precedente è
+  // morto): tutti questi colpi restano nello stesso numero di turno, dato
+  // che appartengono alla stessa azione del combattente, ma vengono
+  // comunque registrati come righe separate nella cronaca. Si interrompe
+  // subito se una delle due squadre resta senza combattenti in vita.
+  // Esegue un round completo: agisce, in ordine di Iniziativa decrescente,
+  // ogni combattente ancora vivo di entrambe le squadre. Ogni combattente
+  // ha al massimo UN'azione per turno, scelta tra quelle elencate nella
+  // finestra Azioni secondo il menù "Usa questa azione se:" di ciascuna
+  // (vedi chooseActionForTurn); quell'azione colpisce tante volte quante
+  // indicato dal suo "Colpi/round", scegliendo il bersaglio ad ogni colpo
+  // secondo il proprio Target (può quindi cambiare bersaglio se il
+  // precedente muore durante lo stesso turno). Tutti questi colpi restano
+  // nello stesso numero di turno, dato che appartengono alla stessa unica
+  // azione del combattente, ma vengono comunque registrati come righe
+  // separate nella cronaca. Si interrompe subito se una delle due squadre
+  // resta senza combattenti in vita.
+  function runFullRound(team1, team2){
+    const combined = [...team1, ...team2].filter(c => c.hp > 0);
+    combined.sort((a, b) => b.init - a.init);
+
+    const turns = [];
+    let turnCounter = 0;
+    for(const attacker of combined){
+      if(attacker.hp <= 0) continue;
+      const enemyTeam = attacker.team === 1 ? team2 : team1;
+      const actions = (attacker.actions && attacker.actions.length) ? attacker.actions : [defaultActionData()];
+      turnCounter += 1;
+      let attackIndex = 0;
+      let stopAttacker = false;
+
+      // Prone viene rimosso all'inizio del turno di chi ne è affetto,
+      // prima che agisca.
+      let proneRemovedNote = null;
+      if(hasStatus(attacker, 'prone')){
+        attacker.statuses.prone = 0;
+        proneRemovedNote = `${attacker.name} is no longer Prone.`;
+      }
+
+      let firstTurnOfAttacker = null;
+      let lastTurnOfAttacker = null;
+
+      // Sceglie l'unica azione di questo turno e aggiorna la sua "arma
+      // impugnata" (usata anche per la Portata in difesa dai prossimi
+      // attacchi subiti prima del suo prossimo turno).
+      attacker.actsCount = (attacker.actsCount || 0) + 1;
+      const chosen = chooseActionForTurn(attacker, actions, enemyTeam);
+      const action = chosen.action;
+      const runtime = attacker.actionRuntime[chosen.index];
+      runtime.used = true;
+      runtime.lastUsedTurn = attacker.actsCount;
+      attacker.currentAction = action;
+
+      const hits = Math.max(1, action.hits || 1);
+      const attacksTotal = hits;
+
+      for(let h = 0; h < hits; h++){
+        if(attacker.hp <= 0){ stopAttacker = true; break; }
+        const target = chooseTargetForAction(action, enemyTeam);
+        if(!target){ stopAttacker = true; break; }
+
+        attackIndex += 1;
+        const t = resolveTurn(attacker, target, action);
+        t.turnNumber = turnCounter;
+        t.attackIndex = attackIndex;
+        t.attacksTotal = attacksTotal;
+
+        // Scatto dei PV e del Momentum di tutti i personaggi subito dopo
+        // questo turno, così la cronaca può mostrare lo stato reale del
+        // momento e non quello finale dell'intero round (che a quel punto
+        // potrebbe già includere colpi successivi).
+        t.hpSnapshot = {};
+        t.momentumSnapshot = {};
+        team1.forEach(c => { t.hpSnapshot[c.id] = c.hp; t.momentumSnapshot[c.id] = !!c.momentum; });
+        team2.forEach(c => { t.hpSnapshot[c.id] = c.hp; t.momentumSnapshot[c.id] = !!c.momentum; });
+
+        if(!firstTurnOfAttacker) firstTurnOfAttacker = t;
+        lastTurnOfAttacker = t;
+
+        turns.push(t);
+
+        const team1Alive = team1.some(c => c.hp > 0);
+        const team2Alive = team2.some(c => c.hp > 0);
+        if(!team1Alive || !team2Alive){
+          if(firstTurnOfAttacker && proneRemovedNote) firstTurnOfAttacker.statusStartNote = proneRemovedNote;
+          return turns;
+        }
+      }
+
+      if(firstTurnOfAttacker && proneRemovedNote) firstTurnOfAttacker.statusStartNote = proneRemovedNote;
+
+      // Blinded viene rimosso alla fine del turno di chi ne soffre.
+      if(hasStatus(attacker, 'blinded')){
+        attacker.statuses.blinded = 0;
+        if(lastTurnOfAttacker) lastTurnOfAttacker.statusEndNote = `${attacker.name} is no longer Blinded.`;
+      }
+    }
+    return turns;
+  }
+
+  // ---- Stato visivo dei personaggi (barre vita nelle schede) ----
+
+  function renderMemberStatus(teamKey, char){
+    const container = el(teamKey === 1 ? 'roster1' : 'roster2');
+    const card = container.querySelector(`.member-card[data-id="${char.id}"]`);
+    if(!card) return;
+    const statusDiv = card.querySelector('.member-status');
+    statusDiv.classList.add('show');
+    statusDiv.classList.toggle('dead', char.hp <= 0);
+    statusDiv.querySelector('.status-name').textContent = char.name;
+    statusDiv.querySelector('.status-hp').textContent = `${Math.max(0, char.hp)} / ${char.hpMax} HP`;
+    statusDiv.querySelector('.hp-fill').style.width = Math.max(0, (char.hp / char.hpMax) * 100) + '%';
+    statusDiv.querySelector('.hp-track').classList.toggle('momentum-glow', state.momentumOn && !!char.momentum);
+
+    const badgesDiv = statusDiv.querySelector('.status-badges');
+    const s = char.statuses || {};
+    const badges = Object.keys(STATUS_DEFS)
+      .filter(key => s[key] > 0)
+      .map(key => {
+        const def = STATUS_DEFS[key];
+        const stackNote = def.stackable ? ` x${s[key]}` : '';
+        const desc = STATUS_DESCRIPTIONS[key] || '';
+        return `<span class="status-badge tooltip-wrap" data-tip="${escapeHtml(desc)}">${escapeHtml(def.label)}${stackNote}</span>`;
+      }).join('');
+    badgesDiv.innerHTML = badges;
+  }
+
+  function renderAllStatuses(){
+    state.team1.forEach(c => renderMemberStatus(1, c));
+    state.team2.forEach(c => renderMemberStatus(2, c));
+  }
+
+  function resetMemberStatuses(){
+    document.querySelectorAll('.member-status').forEach(s => {
+      s.classList.remove('show', 'dead');
+      s.querySelector('.hp-fill').style.width = '100%';
+      s.querySelector('.hp-track').classList.remove('momentum-glow');
+      const badgesDiv = s.querySelector('.status-badges');
+      if(badgesDiv) badgesDiv.innerHTML = '';
+    });
+  }
+
+  // ---- Battaglia interattiva ----
+
+  function startBattle(){
+    const t1 = readTeamSetup(1);
+    const t2 = readTeamSetup(2);
+    if(t1.length === 0 || t2.length === 0){
+      alert('Each team must have at least one character.');
+      return;
+    }
+    state.team1 = t1;
+    state.team2 = t2;
+    state.team1Name = el('team1Name').value.trim() || 'Team One';
+    state.team2Name = el('team2Name').value.trim() || 'Team Two';
+    state.started = true;
+    state.over = false;
+    state.round = 0;
+
+    setInputsDisabled(true);
+    el('startBtn').disabled = true;
+    el('rollBtn').disabled = false;
+    el('autoBtn').disabled = false;
+
+    renderAllStatuses();
+
+    const names1 = state.team1.map(c => c.name).join(', ');
+    const names2 = state.team2.map(c => c.name).join(', ');
+    el('arena').innerHTML = `<p class="arena-empty"><b>${escapeHtml(state.team1Name)}</b> (${escapeHtml(names1)}) faces <b>${escapeHtml(state.team2Name)}</b> (${escapeHtml(names2)}). Play the round to see who strikes.</p>`;
+    el('log').innerHTML = '<div class="log-empty">No hits rolled yet.</div>';
+  }
+
+  function resetBattle(){
+    state.started = false;
+    state.over = false;
+    state.round = 0;
+    state.team1 = [];
+    state.team2 = [];
+    setInputsDisabled(false);
+    el('startBtn').disabled = false;
+    el('rollBtn').disabled = true;
+    el('autoBtn').disabled = true;
+    resetMemberStatuses();
+    el('arena').innerHTML = '<p class="arena-empty">The arena awaits. Build the teams and start the battle.</p>';
+    el('log').innerHTML = '<div class="log-empty">No hits rolled yet.</div>';
+  }
+
+  function playRound(){
+    if(!state.started || state.over) return null;
+    state.round += 1;
+
+    const turns = runFullRound(state.team1, state.team2);
+    turns.forEach((t, i) => appendLog(state.round, t, i === turns.length - 1));
+
+    const statusNotes = processRoundEndStatuses(state.team1, state.team2);
+    appendStatusLog(state.round, statusNotes);
+
+    renderAllStatuses();
+    renderArena(state.round, turns);
+
+    const team1Alive = state.team1.some(c => c.hp > 0);
+    const team2Alive = state.team2.some(c => c.hp > 0);
+    if(!team1Alive || !team2Alive){
+      state.over = true;
+      el('rollBtn').disabled = true;
+      el('autoBtn').disabled = true;
+      appendFinalLog();
+    }
+
+    return turns;
+  }
+
+  function momentumNote(t){
+    const notes = [];
+    if(t.attackerGainedMomentum) notes.push(`<b>${escapeHtml(t.attacker.name)}</b> gains Momentum.`);
+    if(t.attackerLostMomentum) notes.push(`<b>${escapeHtml(t.attacker.name)}</b> loses Momentum.`);
+    if(t.defenderLostMomentum) notes.push(`<b>${escapeHtml(t.defender.name)}</b> loses Momentum.`);
+    return notes.length ? ' ' + notes.join(' ') : '';
+  }
+
+  // Nota tra parentesi da affiancare a un tiro in cronaca, che riunisce:
+  // - l'eventuale inversione decina/unità, etichettata con la vera fonte
+  //   (Momentum, Prone, Blinded o il nome del Modificatore con Has attivo)
+  //   invece di essere sempre chiamata "Momentum" come accadeva prima;
+  // - l'eventuale bonus/malus fisso di ±1 LS dato dall'avere 2 o più fonti
+  //   di vantaggio/svantaggio sullo stesso tiro;
+  // - i singoli +LS/-LS dati dai Modificatori (Regola dei Modificatori),
+  //   citati per nome invece di sparire dentro il totale.
+  // rollInfo può essere null (tiri che non passano da rollAdvantageInfo).
+  function rollInlineNote(rawRoll, finalRoll, swapped, rollInfo, lsBreakdown){
+    const parts = [];
+    if(swapped && rollInfo){
+      const isDisadvantage = !!rollInfo.disadvantage;
+      const dirLabel = isDisadvantage ? 'Disadvantage' : 'Advantage';
+      const sources = isDisadvantage ? rollInfo.disSources : rollInfo.advSources;
+      const srcLabel = sources && sources.length ? ` (${sources.map(escapeHtml).join(', ')})` : '';
+      parts.push(`${dirLabel}${srcLabel}: ${rawRoll} &rarr; ${finalRoll}`);
+    }
+    if(rollInfo && rollInfo.lsBonus){
+      parts.push(`${rollInfo.lsBonus > 0 ? 'extra advantage' : 'extra disadvantage'}: ${formatSigned(rollInfo.lsBonus)}SL`);
+    }
+    if(lsBreakdown && lsBreakdown.length){
+      lsBreakdown.forEach(b => parts.push(`${escapeHtml(b.name)} ${formatSigned(b.value)}SL`));
+    }
+    return parts.length ? ` (${parts.join('; ')})` : '';
+  }
+
+
+  // Note testuali su status applicati o rimossi in questo turno: rimozione
+  // di Prone a inizio turno dell'attaccante, status inflitto al bersaglio
+  // colpito, e rimozione di Blinded a fine turno dell'attaccante.
+  function statusEffectNote(t){
+    const notes = [];
+    if(t.statusStartNote) notes.push(escapeHtml(t.statusStartNote));
+    if(t.statusApplied){
+      const def = STATUS_DEFS[t.statusApplied.key];
+      const label = def ? def.label : t.statusApplied.key;
+      const stackNote = def && def.stackable ? ` (stack: ${t.statusApplied.after})` : '';
+      notes.push(`<b>${escapeHtml(t.defender.name)}</b> is hit by <b>${escapeHtml(label)}</b>${stackNote}.`);
+      if(t.statusApplied.stunnedKnockout){
+        notes.push(`<b>${escapeHtml(t.defender.name)}</b> exceeds Toughness's tens digit with Stunned stacks: drops immediately to <b>0 HP</b>.`);
+      }
+    }
+    if(t.statusEndNote) notes.push(escapeHtml(t.statusEndNote));
+    return notes.length ? ' ' + notes.join(' ') : '';
+  }
+
+  // Descrive come si è arrivati al totale danni: dado/i (o valore fisso)
+  // dell'azione, eventuale bonus da "Charat. mod." (decina della
+  // caratteristica scelta), la differenza di LS (che include il risultato
+  // negativo del difensore quando fallisce la parata) e Armatura del
+  // difensore sottratta.
+  function damageBreakdownText(t){
+    if(!t.damageRoll || !t.damageRoll.valid){
+      return `${t.damage} fixed damage − Armor ${t.defender.armor}`;
+    }
+    const bonusLabel = t.damageStatBonus ? ` ${formatSigned(t.damageStatBonus)}` : '';
+    const lsLabel = t.lsDiff ? ` ${formatSigned(t.lsDiff)} SL` : '';
+    if(t.damageRoll.fixed){
+      return `${t.damageRoll.total} fixed${bonusLabel}${lsLabel} − Armor ${t.defender.armor}`;
+    }
+    const diceLabel = `${t.damageRoll.count}d${t.damageRoll.sides}`;
+    const rollsLabel = t.damageRoll.rolls.join('+');
+    return `${diceLabel} (${rollsLabel} = ${t.damageRoll.total})${bonusLabel}${lsLabel} − Armor ${t.defender.armor}`;
+  }
+
+  // Descrive il totale danni per le azioni di Tipo "Test": elenca in
+  // ordine i termini della formula del campo Damage (dadi, valori fissi
+  // e l'eventuale voce "LS", sostituita con l'LS ottenuto dal check),
+  // il bonus da "Charat. mod." e l'Armatura del difensore sottratta.
+  function testDamageBreakdownText(t){
+    const dr = t.damageRoll;
+    if(!dr || !dr.valid || !dr.terms || !dr.terms.length){
+      return `${t.damage} fixed damage − Armor ${t.defender.armor}`;
+    }
+    const pieces = dr.terms.map((term, idx) => {
+      const signChar = term.sign < 0 ? '−' : (idx === 0 ? '' : '+');
+      let piece;
+      if(term.kind === 'ls') piece = `SL(${formatSigned(term.lsValue)})`;
+      else if(term.kind === 'dice') piece = `${term.count}d${term.sides}(${term.rolls.join('+')})`;
+      else piece = `${Math.abs(term.value)}`;
+      return `${signChar}${piece}`;
+    });
+    const bonusLabel = t.damageStatBonus ? ` ${formatSigned(t.damageStatBonus)}` : '';
+    return `${pieces.join(' ')}${bonusLabel} − Armor ${t.defender.armor}`;
+  }
+
+  function turnVerdict(t){
+    if(t.isTouchSpell){
+      if(!t.testSuccess){
+        return `<b>${escapeHtml(t.attacker.name)}</b> fails the ${escapeHtml(t.actionName)} Test &mdash; rolls ${t.rollA} against threshold ${t.testThreshold}. The Touch spell fails to make contact and deals no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+      }
+      if(!t.opposeSuccess){
+        return `<b>${escapeHtml(t.attacker.name)}</b> passes the ${escapeHtml(t.actionName)} Test (Threshold: rolls ${t.rollA} against ${t.testThreshold}), but fails the Opposed roll &mdash; Yours ${t.rollY}, SL ${formatSigned(t.lsY)} vs Vs ${t.rollD}, SL ${formatSigned(t.lsD)}. No damage.${momentumNote(t)}${statusEffectNote(t)}`;
+      }
+      return `<b>${escapeHtml(t.attacker.name)}</b> passes both the Test and the Opposed roll with ${escapeHtml(t.actionName)} (Yours ${t.rollY}, SL ${formatSigned(t.lsY)} vs Vs ${t.rollD}, SL ${formatSigned(t.lsD)}) and hits <b>${escapeHtml(t.defender.name)}</b> &mdash; ${testDamageBreakdownText(t)} = <b>${t.damage}</b> damage.${momentumNote(t)}${statusEffectNote(t)}`;
+    }
+    if(t.isTest){
+      if(!t.hit){
+        return `<b>${escapeHtml(t.attacker.name)}</b> fails the ${escapeHtml(t.actionName)} test &mdash; rolls ${t.rollA} against threshold ${t.testThreshold}, no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+      }
+      return `<b>${escapeHtml(t.attacker.name)}</b> passes the ${escapeHtml(t.actionName)} test (rolls ${t.rollA} against threshold ${t.testThreshold}) and hits <b>${escapeHtml(t.defender.name)}</b> &mdash; ${testDamageBreakdownText(t)} = <b>${t.damage}</b> damage.${momentumNote(t)}${statusEffectNote(t)}`;
+    }
+    if(!t.hit){
+      return `<b>${escapeHtml(t.defender.name)}</b> parries ${escapeHtml(t.actionName)} &mdash; SL ${formatSigned(t.lsD)} vs ${formatSigned(t.lsA)}, no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+    }
+    return `<b>${escapeHtml(t.attacker.name)}</b> hits <b>${escapeHtml(t.defender.name)}</b> with ${escapeHtml(t.actionName)} &mdash; ${damageBreakdownText(t)} = <b>${t.damage}</b> damage.${momentumNote(t)}${statusEffectNote(t)}`;
+  }
+
+  // Variante di rollInlineNote per i punti dove il dettaglio è mostrato
+  // come lista di voci separate da "&middot;" invece che tra parentesi
+  // (la vista "Arena" turno per turno).
+  function rollInlineNoteMiddot(rawRoll, finalRoll, swapped, rollInfo, lsBreakdown){
+    const inline = rollInlineNote(rawRoll, finalRoll, swapped, rollInfo, lsBreakdown);
+    if(!inline) return '';
+    // inline è nella forma " (parte1; parte2; ...)": la spacchettiamo e la
+    // ricomponiamo con "&middot;" al posto di "; " e delle parentesi.
+    const inner = inline.slice(2, -1);
+    return inner.split('; ').map(part => ` &middot; ${part}`).join('');
+  }
+
+  function rollDetail(rawRoll, finalRoll, swapped, ls, reachBonus, rollInfo, lsBreakdown){
+    let base = `tens ${decina(finalRoll)} &middot; SL ${formatSigned(ls)}`;
+    base += rollInlineNoteMiddot(rawRoll, finalRoll, swapped, rollInfo, lsBreakdown);
+    if(reachBonus) base += ` &middot; Reach: +${reachBonus} WS`;
+    return base;
+  }
+
+  // Dettaglio del tiro per le azioni di tipo Test: mostra la soglia
+  // (caratteristica + modificatore To Hit) contro cui il d100 viene
+  // confrontato e l'LS del check, disponibile come voce "LS" nella
+  // formula del campo Damage.
+  function testRollDetail(t){
+    const statLabel = CHAR_STAT_LABELS[t.statKey] || t.statKey;
+    const modLabel = t.toHitMod ? ` ${formatSigned(t.toHitMod)}` : '';
+    let base = `threshold ${t.testThreshold} (${statLabel}${modLabel}) &middot; SL ${formatSigned(t.lsA)}`;
+    base += rollInlineNoteMiddot(t.rawRollA, t.rollA, t.momentumSwapA, t.rollInfoA, t.lsBreakdownA);
+    return base;
+  }
+
+  function renderArena(round, turns){
+    if(turns.length === 0){
+      el('arena').innerHTML = `<p class="arena-empty">Round ${round}: no turn played, the battle is already over.</p>`;
+      return;
+    }
+
+    const blocks = turns.map(t => {
+      const throwRow = t.isTouchSpell ? `
+        <div class="throw-row">
+          <div class="throw ${t.testSuccess ? '' : 'loser'}">
+            <span class="who">${escapeHtml(t.attacker.name)} (Test / Threshold)</span>
+            <span class="roll">${t.rollA}</span>
+            <span class="detail">${testRollDetail(t)}</span>
+          </div>
+          <div class="throw ${t.opposeSuccess ? '' : 'loser'}">
+            <span class="who">${escapeHtml(t.attacker.name)} (Opposed / Yours)</span>
+            <span class="roll">${t.rollY === null ? '—' : t.rollY}</span>
+            <span class="detail">${t.rollY === null ? 'no roll: Test failed' : rollDetail(t.rawRollY, t.rollY, t.momentumSwapY, t.lsY, undefined, t.rollInfoY, t.lsBreakdownY)}</span>
+          </div>
+          <div class="throw right">
+            <span class="who">${escapeHtml(t.defender.name)} (Opposed / Vs)</span>
+            <span class="roll">${t.rollD === null ? '—' : t.rollD}</span>
+            <span class="detail">${t.rollD === null ? 'no roll: Test failed' : rollDetail(t.rawRollD, t.rollD, t.momentumSwapD, t.lsD, t.reachBonusD, t.rollInfoD, t.lsBreakdownD)}</span>
+          </div>
+        </div>` : t.isTest ? `
+        <div class="throw-row">
+          <div class="throw ${t.hit ? '' : 'loser'}" style="flex:1">
+            <span class="who">${escapeHtml(t.attacker.name)} (test)</span>
+            <span class="roll">${t.rollA}</span>
+            <span class="detail">${testRollDetail(t)}</span>
+          </div>
+        </div>` : `
+        <div class="throw-row">
+          <div class="throw ${t.hit ? '' : 'loser'}">
+            <span class="who">${escapeHtml(t.attacker.name)} (Yours)</span>
+            <span class="roll">${t.rollA}</span>
+            <span class="detail">${rollDetail(t.rawRollA, t.rollA, t.momentumSwapA, t.lsA, undefined, t.rollInfoA, t.lsBreakdownA)}</span>
+          </div>
+          <div class="throw right ${t.hit ? 'loser' : ''}">
+            <span class="who">${escapeHtml(t.defender.name)} (defends)</span>
+            <span class="roll">${t.rollD}</span>
+            <span class="detail">${rollDetail(t.rawRollD, t.rollD, t.momentumSwapD, t.lsD, t.reachBonusD, t.rollInfoD, t.lsBreakdownD)}</span>
+          </div>
+        </div>`;
+      return `
+      <div class="turn-block">
+        <div class="turn-label">Round ${round} &middot; Turn ${t.turnNumber} &mdash; ${escapeHtml(t.attacker.name)} uses ${escapeHtml(t.actionName)}${t.attacksTotal > 1 ? ` (hit ${t.attackIndex}/${t.attacksTotal})` : ''}</div>
+        ${throwRow}
+        <div class="verdict">${turnVerdict(t)}</div>
+      </div>
+    `;
+    }).join('');
+
+    el('arena').innerHTML = blocks;
+  }
+
+  function hpTrackHtml(c, glow){
+    const greenPct = Math.max(0, Math.min(100, (c.hp / c.hpMax) * 100));
+    const dmg = c.damageThisTurn || 0;
+    const redPct = dmg > 0 ? Math.max(0, Math.min(100 - greenPct, (dmg / c.hpMax) * 100)) : 0;
+    const redSegment = redPct > 0 ? `<div class="hp-damage-fill" style="width:${redPct}%"></div>` : '';
+    return `<div class="hp-track${glow ? ' momentum-glow' : ''}"><div class="hp-fill" style="width:${greenPct}%"></div>${redSegment}</div>`;
+  }
+
+  function memberHpLineHtml(c, t, alignRight){
+    // Usa lo scatto dei PV e del Momentum preso subito dopo QUESTO turno
+    // (non i valori live dell'oggetto, che a fine round riflettono già i
+    // turni successivi).
+    const hp = (t.hpSnapshot && t.hpSnapshot[c.id] !== undefined) ? t.hpSnapshot[c.id] : c.hp;
+    const hasMomentum = t.momentumOn && t.momentumSnapshot && !!t.momentumSnapshot[c.id];
+    const dmg = (t.hit && t.defender.id === c.id) ? t.damage : 0;
+    const deadClass = hp <= 0 ? ' dead' : '';
+    const rightClass = alignRight ? ' right' : '';
+    return `
+        <div class="log-hp${rightClass}${deadClass}">
+          <span class="log-hp-label"><b>${escapeHtml(c.name)}</b> &middot; ${Math.max(0, hp)} / ${c.hpMax} HP</span>
+          ${hpTrackHtml({ hp: hp, hpMax: c.hpMax, damageThisTurn: dmg }, hasMomentum)}
+        </div>`;
+  }
+
+  // Mostra, per ogni turno, tutte le barre vita della Squadra 1 a sinistra
+  // e tutte quelle della Squadra 2 a destra, evidenziando in rosso il danno
+  // appena subito dal difensore di questo turno specifico.
+  function renderHpRow(t){
+    const col1 = state.team1.map(c => memberHpLineHtml(c, t, false)).join('');
+    const col2 = state.team2.map(c => memberHpLineHtml(c, t, true)).join('');
+    return `
+      <div class="log-hp-row">
+        <div class="log-hp-col">${col1}</div>
+        <div class="log-hp-col right">${col2}</div>
+      </div>`;
+  }
+
+  function appendLog(round, t, isRoundEnd){
+    const log = el('log');
+    if(log.querySelector('.log-empty')) log.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = `log-entry${isRoundEnd ? ' round-end' : ''}`;
+
+    const reachNote = t.reachBonusD ? ` (Reach: +${t.reachBonusD} WS to ${escapeHtml(t.defender.name)}, longer weapon)` : '';
+    const attackNote = t.attacksTotal > 1 ? ` (hit ${t.attackIndex}/${t.attacksTotal})` : '';
+    const actionLabel = escapeHtml(t.actionName);
+
+    // Note da affiancare a ciascun tiro: inversione (con la fonte reale di
+    // vantaggio/svantaggio, non più sempre "Momentum"), bonus/malus da
+    // "più vantaggi"/"più svantaggi", e i +LS/-LS dei Modificatori attivi su quel tiro.
+    const noteA = rollInlineNote(t.rawRollA, t.rollA, t.momentumSwapA, t.rollInfoA, t.lsBreakdownA);
+    const noteY = rollInlineNote(t.rawRollY, t.rollY, t.momentumSwapY, t.rollInfoY, t.lsBreakdownY);
+    const noteD = rollInlineNote(t.rawRollD, t.rollD, t.momentumSwapD, t.rollInfoD, t.lsBreakdownD);
+
+    let text;
+    if(t.isTouchSpell){
+      if(!t.testSuccess){
+        text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; <b>Test:</b> rolls ${t.rollA}${noteA} against threshold ${t.testThreshold}. <b>${escapeHtml(t.attacker.name)}</b> fails the Test: no contact, no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+      } else if(!t.opposeSuccess){
+        text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; <b>Test / Threshold:</b> ${t.rollA}${noteA} against ${t.testThreshold}, SL ${formatSigned(t.lsA)}; <b>Opposed / Yours:</b> ${t.rollY}${noteY}, SL ${formatSigned(t.lsY)}; <b>Opposed / Vs:</b> ${t.rollD}${noteD}, SL ${formatSigned(t.lsD)}${reachNote}. <b>${escapeHtml(t.defender.name)}</b> avoids contact: no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+      } else {
+        const defenderHpAfter = (t.hpSnapshot && t.hpSnapshot[t.defender.id] !== undefined) ? t.hpSnapshot[t.defender.id] : t.defender.hp;
+        text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; <b>Test / Threshold:</b> ${t.rollA}${noteA} against ${t.testThreshold}, SL ${formatSigned(t.lsA)}; <b>Opposed / Yours:</b> ${t.rollY}${noteY}, SL ${formatSigned(t.lsY)}; <b>Opposed / Vs:</b> ${t.rollD}${noteD}, SL ${formatSigned(t.lsD)}${reachNote}. Both succeed: ${testDamageBreakdownText(t)} = <b>${t.damage}</b> damage. ${escapeHtml(t.defender.name)} drops to ${Math.max(0, defenderHpAfter)} HP.${momentumNote(t)}${statusEffectNote(t)}`;
+      }
+    } else if(t.isTest){
+      if(!t.hit){
+        text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; rolls ${t.rollA}${noteA} against threshold ${t.testThreshold}. <b>${escapeHtml(t.attacker.name)}</b> fails the test, no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+      } else {
+        const defenderHpAfter = (t.hpSnapshot && t.hpSnapshot[t.defender.id] !== undefined) ? t.hpSnapshot[t.defender.id] : t.defender.hp;
+        text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; rolls ${t.rollA}${noteA} against threshold ${t.testThreshold}. <b>${escapeHtml(t.attacker.name)}</b> passes the test &mdash; ${testDamageBreakdownText(t)} = <b>${t.damage}</b> damage. ${escapeHtml(t.defender.name)} drops to ${Math.max(0, defenderHpAfter)} HP.${momentumNote(t)}${statusEffectNote(t)}`;
+      }
+    } else if(!t.hit){
+      text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; rolls ${t.rollA}${noteA}, SL ${formatSigned(t.lsA)}; the defender rolls ${t.rollD}${noteD}, SL ${formatSigned(t.lsD)}${reachNote}. <b>${escapeHtml(t.defender.name)}</b> parries the blow, no damage.${momentumNote(t)}${statusEffectNote(t)}`;
+    } else {
+      const defenderHpAfter = (t.hpSnapshot && t.hpSnapshot[t.defender.id] !== undefined) ? t.hpSnapshot[t.defender.id] : t.defender.hp;
+      text = `${escapeHtml(t.attacker.name)} uses <b>${actionLabel}</b>${attackNote} against ${escapeHtml(t.defender.name)} &mdash; rolls ${t.rollA}${noteA}, SL ${formatSigned(t.lsA)}; the defender rolls ${t.rollD}${noteD}, SL ${formatSigned(t.lsD)}${reachNote}. <b>${escapeHtml(t.attacker.name)}</b> hits &mdash; ${damageBreakdownText(t)} = <b>${t.damage}</b> damage. ${escapeHtml(t.defender.name)} drops to ${Math.max(0, defenderHpAfter)} HP.${momentumNote(t)}${statusEffectNote(t)}`;
+    }
+
+    div.innerHTML = `<span class="round-no">Round ${round} &middot; Turn ${t.turnNumber}</span>${text}${renderHpRow(t)}`;
+    log.appendChild(div);
+  }
+
+  function appendStatusLog(round, notes){
+    if(!notes.length) return;
+    const log = el('log');
+    if(log.querySelector('.log-empty')) log.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'log-entry round-end';
+    const body = notes.map(n => escapeHtml(n)).join('<br>');
+    div.innerHTML = `<span class="round-no">Round ${round} &middot; End-of-round effects</span>${body}`;
+    log.appendChild(div);
+  }
+
+  function appendFinalLog(){
+    const log = el('log');
+    const div = document.createElement('div');
+    div.className = 'log-entry final';
+
+    const alive1 = state.team1.filter(c => c.hp > 0);
+    const alive2 = state.team2.filter(c => c.hp > 0);
+
+    let text;
+    if(alive1.length === 0 && alive2.length === 0){
+      text = `Both teams fall in the same round. The battle ends without a winner.`;
+    } else if(alive2.length === 0){
+      text = `<b>${escapeHtml(state.team1Name)}</b> wins! Survivors: ${escapeHtml(alive1.map(c => c.name).join(', '))}.`;
+    } else {
+      text = `<b>${escapeHtml(state.team2Name)}</b> wins! Survivors: ${escapeHtml(alive2.map(c => c.name).join(', '))}.`;
+    }
+
+    div.innerHTML = `<span class="round-no">Outcome</span>${text}`;
+    log.appendChild(div);
+  }
+
+  el('startBtn').addEventListener('click', startBattle);
+  el('resetBtn').addEventListener('click', resetBattle);
+  el('rollBtn').addEventListener('click', playRound);
+
+  el('momentumBtn').addEventListener('click', function(){
+    state.momentumOn = !state.momentumOn;
+    const btn = el('momentumBtn');
+    btn.classList.toggle('on', state.momentumOn);
+    btn.innerHTML = `<span class="toggle-pill"></span> Momentum: ${state.momentumOn ? 'ON' : 'OFF'}`;
+    if(state.started && !state.over) renderAllStatuses();
+  });
+
+  el('autoBtn').addEventListener('click', function(){
+    el('rollBtn').disabled = true;
+    el('autoBtn').disabled = true;
+    const step = () => {
+      if(state.over) return;
+      playRound();
+      if(!state.over) setTimeout(step, 750);
+    };
+    step();
+  });
+
+  el('mediaBtn').addEventListener('click', function(){
+    const setup1 = readTeamSetup(1);
+    const setup2 = readTeamSetup(2);
+    if(setup1.length === 0 || setup2.length === 0){
+      alert('Each team must have at least one character.');
+      return;
+    }
+    const team1Name = el('team1Name').value.trim() || 'Team One';
+    const team2Name = el('team2Name').value.trim() || 'Team Two';
+
+    el('log').innerHTML = '';
+    el('arena').innerHTML = '<p class="arena-empty">Running simulation of 1000 battles&hellip;</p>';
+
+    let wins1 = 0, wins2 = 0, draws = 0, totalRounds = 0;
+    const SAFETY_CAP = 300;
+    const BATTLE_COUNT = 1000;
+
+    for(let s = 1; s <= BATTLE_COUNT; s++){
+      const t1 = setup1.map(c => ({ ...c, hp: c.hpMax, momentum: false, statuses: {} }));
+      const t2 = setup2.map(c => ({ ...c, hp: c.hpMax, momentum: false, statuses: {} }));
+
+      let round = 0;
+      while(t1.some(c => c.hp > 0) && t2.some(c => c.hp > 0) && round < SAFETY_CAP){
+        round += 1;
+        runFullRound(t1, t2);
+        processRoundEndStatuses(t1, t2);
+      }
+      totalRounds += round;
+
+      const alive1 = t1.some(c => c.hp > 0);
+      const alive2 = t2.some(c => c.hp > 0);
+      if(alive1 && !alive2) wins1 += 1;
+      else if(alive2 && !alive1) wins2 += 1;
+      else draws += 1;
+    }
+
+    const avgRounds = (totalRounds / BATTLE_COUNT).toFixed(1);
+    const summary = document.createElement('div');
+    summary.className = 'log-entry final';
+    const drawText = draws ? ` &middot; ${draws} draws` : '';
+    summary.innerHTML = `<span class="round-no">Average over ${BATTLE_COUNT} battles</span><b>${escapeHtml(team1Name)}</b> wins ${wins1}/${BATTLE_COUNT} &middot; <b>${escapeHtml(team2Name)}</b> wins ${wins2}/${BATTLE_COUNT}${drawText}. Average duration: ${avgRounds} rounds.`;
+    el('log').appendChild(summary);
+
+    el('arena').innerHTML = `<p class="arena-empty">Simulation complete &mdash; ${escapeHtml(team1Name)}: ${wins1} wins, ${escapeHtml(team2Name)}: ${wins2} wins out of ${BATTLE_COUNT} battles (average ${avgRounds} rounds per battle).</p>`;
+  });
+
+})();
+</script>
+</body>
+</html>
