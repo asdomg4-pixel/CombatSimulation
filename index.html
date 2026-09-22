@@ -884,7 +884,7 @@
       <summary>Rules &amp; notes</summary>
       <div class="footer-content">
         <p><b>SL Rule:</b> SL = (tens digit of the characteristic used as the threshold, plus the action's To Hit modifier) − (tens digit of the roll). Each round, every combatant still alive on both teams acts in order of decreasing Initiative: whoever acts performs their Actions in sequence, striking the target chosen among living enemies according to each action's Target (highest HP, lowest HP, or random). If the defender's SL (based on their Weapon Skill) is equal to or higher, the blow is parried and damage is 0; if the attacker's SL is higher, the blow lands. The battle ends when one team has no combatants left alive.</p>
-        <p><b>Reach Rule:</b> every action has its own Reach on five levels, from shortest to longest &mdash; very short, short, average, long, very long (a character can therefore have weapons of different reach depending on the action used). When a character defends against an attack made with an action whose Reach is shorter than the Reach of the action they're currently defending with (the last one they used, or the first in their list if they haven't acted yet), they add +10 to their own Weapon Skill for that defensive roll only, because they manage to keep the attacker at a distance. The bonus applies only on defense, never when they are the one attacking.</p>
+        <p><b>Reach Rule:</b> every action has its own Reach on five levels, from shortest to longest &mdash; very short, short, average, long, very long (a character can therefore have weapons of different reach depending on the action used). When a character defends against an attack made with an action whose Reach is shorter than the Reach of the action they're currently defending with (the last one they used, or the first in their list if they haven't acted yet), they add +1 SL to that defensive roll only, because they manage to keep the attacker at a distance. The bonus applies only on defense, never when they are the one attacking, and only when Weapon Skill is the characteristic being used to defend.</p>
         <p><b>Character Stats:</b> besides Weapon Skill, Strength, Toughness, Armor, Initiative and HP, every character also has Ballistic Skill, Agility, Dexterity, Intelligence and Willpower (shown with the "Show more stats" button): for now these are descriptive values, used mainly as a threshold or damage bonus for Actions. Armor is a value set by hand on each sheet and is added to the tens digit of Toughness to form total Armor, which is subtracted from damage taken, always down to a minimum of 1 (e.g. an 8-damage hit against a total Armor of 5 deals 3 damage).</p>
         <p><b>Actions Rule:</b> the "Actions" button on each sheet opens a window listing the character's actions (attacks, spells, checks, etc.), which replaced the old global stats N. Attacks and Target. A character performs at most ONE action on their turn (hitting multiple times in the same round via "Hits/round" doesn't count as separate actions, even though it takes up separate lines in the chronicle): which action is chosen depends on each one's "Use this action if:" menu, evaluated in the order they're listed in the Actions window. The options are: <b>Default</b> (used only if no other action's condition is met), <b>Not yet used</b> (until it has never been chosen in this battle), <b>Every 2 turns</b> (becomes available again only two of the character's turns after the last time it was used), <b>Has momentum</b> (only if the character has Momentum), and <b>Target has different status</b> (only if the chosen target doesn't already have the status this action inflicts). For each action you also set: a free-form name; the Threshold, i.e. which characteristic of the character is used for the Test; the Type, Opposed, Test, or Touch spell; for Opposed and Touch spell, also Yours, i.e. the attacker's characteristic used in the opposed roll, and Vs, i.e. the defender's characteristic used in the opposed roll; Hits/round, how many times that action hits per turn; To Hit, a fixed modifier added to the threshold characteristic before computing the SL (or the Test threshold); Damage, the damage dice in NdM notation (e.g. 1d10 = one 10-sided die, 2d6 = two 6-sided dice, 4/8/12-sided dice also valid) or a fixed whole number (e.g. 4, the default); Stat mod., an optional characteristic whose tens digit is added to the total damage; Target, the criterion for choosing the target; On Hit Effect, the status the hit inflicts on the target when it lands; Is melee, whether the action is melee (affects the Momentum advantage and how it's built, see below); and Reach, the reach of the weapon used by this specific action (see above). With Type Opposed, the "Yours" menu appears, indicating which characteristic the attacker uses in the opposed roll, and the "Vs" menu, indicating which characteristic the defender uses to oppose (by default Weapon Skill, like a parry): both roll a d100 and the blow lands if Yours' SL is higher than the defender's SL. The Threshold isn't used in Opposed actions. With Type Touch spell, the action first uses the Threshold for a Test; only if the Test succeeds does it immediately roll the Opposed check using Yours against Vs. Both must succeed. The Touch spell's Opposed SLs only determine whether the contact succeeds and aren't added to the damage; for Touch spell damage, SL is ignored unless the Damage textbox explicitly includes +SL, in which case the Test's SL is used. The Threshold isn't used as the characteristic for the Opposed roll. With Type Test, instead, the defender doesn't roll any die: the action is a simple check where the attacker rolls a d100 and succeeds if the result is lower than the Threshold characteristic plus the To Hit modifier; on success it deals the indicated Damage (plus any Stat mod.) and applies the On Hit Effect if present. For Test-type actions, the Damage field can also include the entry "SL" (e.g. "Sl+0", "1d6+SL"): it's replaced with the SL obtained from the check itself (threshold tens digit minus roll tens digit) and added to the damage; if the Damage field doesn't contain "SL", the check adds no SL damage bonus, as per the rule.</p>
         <p><b>Momentum Rule:</b> it's gained ONLY by succeeding with an Opposed or Touch spell type action (for Touch spell, both the Threshold Test and the Opposed roll must succeed) and with "Is melee: Yes"; Test-type actions never grant Momentum. It's lost by failing an action, by failing to parry an attack taken, or by suffering a status (whatever its cause). The advantage from having Momentum on attack (roll the die and swap tens/units if the result improves) only applies to actions with "Is melee: Yes".</p>
@@ -1273,7 +1273,7 @@
       data: {
         name: 'Rudy',
         ws: 51, bs: 30, str: 33, tough: 30, armor: 0, init: 45,
-        agility: 30, dexterity: 70, intelligence: 30, willpower: 62,
+        agility: 30, dexterity: 50, intelligence: 30, willpower: 62,
         hp: 12,
         actions: [defaultActionData({
           name: 'Shock',
@@ -1287,16 +1287,25 @@
           damageStatKey: 'none',
           target: 'random',
           onHit: 'stunned',
-          isMelee: 'yes',
+          isMelee: 'no',
           reach: 'very_short',
           useIf: 'default'
         })],
-        modifiers: [defaultModifierData({
-          name: 'Staff',
-          charat: 'ws',
-          activeWhen: 'parry',
-          amount: '+2SL'
-        })]
+        modifiers: [
+          defaultModifierData({
+            name: 'Staff',
+            charat: 'ws',
+            activeWhen: 'parry',
+            amount: '+2SL'
+          }),
+          defaultModifierData({
+            name: 'Fast hands',
+            charat: 'dexterity',
+            activeWhen: 'ownTurn',
+            has: 'advantage',
+            amount: ''
+          })
+        ]
       }
     }
   };
@@ -1661,7 +1670,7 @@
       charat: row.querySelector('.mod-charat').value,
       activeWhen: row.querySelector('.mod-activewhen').value,
       has: row.querySelector('.mod-has').value,
-      amount: row.querySelector('.mod-amount').value.trim() || '+3SL'
+      amount: row.querySelector('.mod-amount').value.trim()
     }));
   }
 
@@ -1786,11 +1795,14 @@
   }
 
   // Bonus di portata: chi si difende con l'arma più lunga di quella usata
-  // dall'attaccante in questa specifica azione ottiene +10 al proprio
-  // Weapon Skill solo per quel tiro difensivo, perché riesce a tenerlo a
-  // distanza.
-  function reachDefenseBonus(defender, attackAction){
-    return reachRank(currentReach(defender)) > reachRank(attackAction ? attackAction.reach : 'average') ? 10 : 0;
+  // dall'attaccante in questa specifica azione ottiene +1 SL sul proprio
+  // tiro difensivo, perché riesce a tenere l'attaccante a distanza. Vale
+  // solo se il difensore sta effettivamente difendendo con il Weapon
+  // Skill (vsStatKey === 'ws'); con altre caratteristiche di difesa non
+  // si applica.
+  function reachDefenseBonus(defender, attackAction, vsStatKey){
+    if(vsStatKey !== 'ws') return 0;
+    return reachRank(currentReach(defender)) > reachRank(attackAction ? attackAction.reach : 'average') ? 1 : 0;
   }
 
   // Calcola la differenza tra l'LS del vincitore e quello del perdente
@@ -2307,11 +2319,11 @@
         rawRollD = rD.raw;
         momentumSwapD = rD.swapped;
 
-        reachBonusD = reachDefenseBonus(defender, action);
+        reachBonusD = reachDefenseBonus(defender, action, vsStatKey);
         const defenderStatValue = typeof defender[vsStatKey] === 'number' ? defender[vsStatKey] : defender.ws;
         const defenderModBonus = flatModifierBonus(defender, vsStatKey, attacker, action, false);
         const defenderLsModBonus = lsModifierBonus(defender, vsStatKey, attacker, action, false);
-        lsD = decina(defenderStatValue + reachBonusD + defenderModBonus) - decina(rollD) - statusLsPenalty(defender) + defenderLsModBonus + defenseInfo.lsBonus;
+        lsD = decina(defenderStatValue + defenderModBonus) - decina(rollD) - statusLsPenalty(defender) + defenderLsModBonus + defenseInfo.lsBonus + reachBonusD;
 
         opposedSuccess = lsY > lsD;
         hit = testSuccess && opposedSuccess;
@@ -2357,11 +2369,11 @@
       rawRollD = rD.raw;
       momentumSwapD = rD.swapped;
 
-      reachBonusD = reachDefenseBonus(defender, action);
+      reachBonusD = reachDefenseBonus(defender, action, vsStatKey);
       const defenderStatValue = typeof defender[vsStatKey] === 'number' ? defender[vsStatKey] : defender.ws;
       const defenderModBonus = flatModifierBonus(defender, vsStatKey, attacker, action, false);
       const defenderLsModBonus = lsModifierBonus(defender, vsStatKey, attacker, action, false);
-      lsD = decina(defenderStatValue + reachBonusD + defenderModBonus) - decina(rollD) - statusLsPenalty(defender) + defenderLsModBonus + defenseInfo.lsBonus;
+      lsD = decina(defenderStatValue + defenderModBonus) - decina(rollD) - statusLsPenalty(defender) + defenderLsModBonus + defenseInfo.lsBonus + reachBonusD;
 
       if(lsA > lsD){
         hit = true;
@@ -2770,7 +2782,7 @@
   function rollDetail(rawRoll, finalRoll, swapped, ls, reachBonus, rollInfo, lsBreakdown){
     let base = `tens ${decina(finalRoll)} &middot; SL ${formatSigned(ls)}`;
     base += rollInlineNoteMiddot(rawRoll, finalRoll, swapped, rollInfo, lsBreakdown);
-    if(reachBonus) base += ` &middot; Reach: +${reachBonus} WS`;
+    if(reachBonus) base += ` &middot; Reach: +${reachBonus} SL`;
     return base;
   }
 
@@ -2885,7 +2897,7 @@
     const div = document.createElement('div');
     div.className = `log-entry${isRoundEnd ? ' round-end' : ''}`;
 
-    const reachNote = t.reachBonusD ? ` (Reach: +${t.reachBonusD} WS to ${escapeHtml(t.defender.name)}, longer weapon)` : '';
+    const reachNote = t.reachBonusD ? ` (Reach: +${t.reachBonusD} SL)` : '';
     const attackNote = t.attacksTotal > 1 ? ` (hit ${t.attackIndex}/${t.attacksTotal})` : '';
     const actionLabel = escapeHtml(t.actionName);
 
