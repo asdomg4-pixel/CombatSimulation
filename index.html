@@ -887,7 +887,7 @@
         <p><b>Reach Rule:</b> every action has its own Reach on five levels, from shortest to longest &mdash; very short, short, average, long, very long (a character can therefore have weapons of different reach depending on the action used). When a character defends against an attack made with an action whose Reach is shorter than the Reach of the action they're currently defending with (the last one they used, or the first in their list if they haven't acted yet), they add +1 SL to that defensive roll only, because they manage to keep the attacker at a distance. The bonus applies only on defense, never when they are the one attacking, and only when Weapon Skill is the characteristic being used to defend.</p>
         <p><b>Character Stats:</b> besides Weapon Skill, Strength, Toughness, Armor, Initiative and HP, every character also has Ballistic Skill, Agility, Dexterity, Intelligence and Willpower (shown with the "Show more stats" button): for now these are descriptive values, used mainly as a threshold or damage bonus for Actions. Armor is a value set by hand on each sheet and is added to the tens digit of Toughness to form total Armor, which is subtracted from damage taken, always down to a minimum of 1 (e.g. an 8-damage hit against a total Armor of 5 deals 3 damage).</p>
         <p><b>Actions Rule:</b> the "Actions" button on each sheet opens a window listing the character's actions (attacks, spells, checks, etc.), which replaced the old global stats N. Attacks and Target. A character performs at most ONE action on their turn (hitting multiple times in the same round via "Hits/round" doesn't count as separate actions, even though it takes up separate lines in the chronicle): which action is chosen depends on each one's "Use this action if:" menu, evaluated in the order they're listed in the Actions window. The options are: <b>Default</b> (used only if no other action's condition is met), <b>Not yet used</b> (until it has never been chosen in this battle), <b>Every 2 turns</b> (becomes available again only two of the character's turns after the last time it was used), <b>Has momentum</b> (only if the character has Momentum), and <b>Target has different status</b> (only if the chosen target doesn't already have the status this action inflicts). For each action you also set: a free-form name; the Threshold, i.e. which characteristic of the character is used for the Test; the Type, Opposed, Test, or Touch spell; for Opposed and Touch spell, also Yours, i.e. the attacker's characteristic used in the opposed roll, and Vs, i.e. the defender's characteristic used in the opposed roll; Hits/round, how many times that action hits per turn; To Hit, a fixed modifier added to the threshold characteristic before computing the SL (or the Test threshold); Damage, the damage dice in NdM notation (e.g. 1d10 = one 10-sided die, 2d6 = two 6-sided dice, 4/8/12-sided dice also valid) or a fixed whole number (e.g. 4, the default); Stat mod., an optional characteristic whose tens digit is added to the total damage; Target, the criterion for choosing the target; On Hit Effect, the status the hit inflicts on the target when it lands; Is melee, whether the action is melee (affects the Momentum advantage and how it's built, see below); and Reach, the reach of the weapon used by this specific action (see above). With Type Opposed, the "Yours" menu appears, indicating which characteristic the attacker uses in the opposed roll, and the "Vs" menu, indicating which characteristic the defender uses to oppose (by default Weapon Skill, like a parry): both roll a d100 and the blow lands if Yours' SL is higher than the defender's SL. The Threshold isn't used in Opposed actions. With Type Touch spell, the action first uses the Threshold for a Test; only if the Test succeeds does it immediately roll the Opposed check using Yours against Vs. Both must succeed. The Touch spell's Opposed SLs only determine whether the contact succeeds and aren't added to the damage; for Touch spell damage, SL is ignored unless the Damage textbox explicitly includes +SL, in which case the Test's SL is used. The Threshold isn't used as the characteristic for the Opposed roll. With Type Test, instead, the defender doesn't roll any die: the action is a simple check where the attacker rolls a d100 and succeeds if the result is lower than the Threshold characteristic plus the To Hit modifier; on success it deals the indicated Damage (plus any Stat mod.) and applies the On Hit Effect if present. For Test-type actions, the Damage field can also include the entry "SL" (e.g. "Sl+0", "1d6+SL"): it's replaced with the SL obtained from the check itself (threshold tens digit minus roll tens digit) and added to the damage; if the Damage field doesn't contain "SL", the check adds no SL damage bonus, as per the rule.</p>
-        <p><b>Momentum Rule:</b> whoever wins an Opposed Melee Test gains Momentum &mdash; both the attacker succeeding with an Opposed or Touch spell type action (for Touch spell, both the Threshold Test and the Opposed roll must succeed) with "Is melee: Yes", and the defender who successfully parries such an action. Test-type actions never grant Momentum to either side, since they involve no Opposed roll. It's lost by failing a Melee action (an action with "Is melee: No" that fails costs no Momentum), by failing to parry an attack taken, or by suffering a status (whatever its cause). The advantage from having Momentum on attack (roll the die and swap tens/units if the result improves) only applies to actions with "Is melee: Yes".</p>
+        <p><b>Momentum Rule:</b> it's gained ONLY by succeeding with an Opposed or Touch spell type action (for Touch spell, both the Threshold Test and the Opposed roll must succeed) and with "Is melee: Yes"; Test-type actions never grant Momentum. It's lost by failing an action, by failing to parry an attack taken, or by suffering a status (whatever its cause). The advantage from having Momentum on attack (roll the die and swap tens/units if the result improves) only applies to actions with "Is melee: Yes".</p>
         <p><b>Modifiers Rule:</b> the "Modifiers" button on each sheet opens a window similar to the Actions one, with a list of conditional bonuses (e.g. the shield that eases parrying). For each you set: a free-form name; Stat, the characteristic it applies to (Armor included); Active when, the moment the bonus is active (during parry, during attack, the character's turn, Opposed-type actions, Test-type actions, when the character or an enemy is at half HP, the first turn of combat); Has, which indicates whether the roll on that characteristic, while the Modifier is active, gets Nothing (no effect), Advantage, or Disadvantage; and Modifier, the bonus value, which accepts two different notations: a plain number (e.g. "10" or "-5") is added directly to the characteristic's value before computing its tens digit for the roll, while a value with SL notation (e.g. "+3SL" or "SL+3", the default) doesn't touch the characteristic but adds (or subtracts, with "-3SL") directly to the total SL obtained from that characteristic's roll. A Modifier on Armor, instead, is added to or subtracted directly from the Armor value used to mitigate damage taken (numeric notation only, not SL). The advantage/disadvantage granted by an active-Has Modifier stacks with other sources (Momentum, Prone, Blinded, etc.) present on the same roll on the same characteristic: with 2 or more sources of advantage you get, besides the tens/units swap if it improves the roll, also a fixed +1 SL; with 2 or more sources of disadvantage you get a fixed -1 SL (besides the swap if it worsens the roll); if both advantage and disadvantage are present on the same roll, from any source and in any number, they fully cancel out and the roll is normal.</p>
         <p><b>Status Rule:</b> each status below lists whether it stacks and what it does. When status advantage/disadvantage and Momentum advantage/disadvantage are both present on the same roll, they don't add up: advantage and disadvantage from opposing sources cancel each other out.</p>
         <ul class="status-rules-list">
@@ -2396,7 +2396,7 @@
     // Soglia sia l'Opposed Yours/Vs). Le azioni di Tipo Test puro non
     // danno mai Momentum, perché non prevedono alcun confronto Opposed.
     let attackerGainedMomentum = false, attackerLostMomentum = false;
-    let defenderLostMomentum = false, defenderGainedMomentum = false;
+    let defenderLostMomentum = false;
     if(momentumOn){
       const canGainMomentum = !isTest && actionIsMelee;
       const hadDefenseRoll = !!rollD;
@@ -2410,22 +2410,8 @@
           defender.momentum = false;
         }
       } else {
-        // La perdita di Momentum per un'azione fallita si applica solo alle
-        // azioni Melee: un'azione "Is melee: No" (es. un incantesimo a
-        // distanza) che fallisce non toglie Momentum all'attaccante.
-        if(actionIsMelee){
-          if(attacker.momentum) attackerLostMomentum = true;
-          attacker.momentum = false;
-        }
-        // Il difensore vince l'Opposed Melee Test (para con successo):
-        // guadagna Momentum a sua volta, alle stesse condizioni con cui lo
-        // guadagnerebbe l'attaccante (azione Melee con un vero confronto
-        // Opposed andato in scena; le azioni di Tipo Test non hanno mai un
-        // tiro di difesa, quindi hadDefenseRoll è già false in quel caso).
-        if(hadDefenseRoll && canGainMomentum){
-          if(!defender.momentum) defenderGainedMomentum = true;
-          defender.momentum = true;
-        }
+        if(attacker.momentum) attackerLostMomentum = true;
+        attacker.momentum = false;
       }
     }
 
@@ -2439,7 +2425,7 @@
       rawRollA, rawRollY, rawRollD,
       momentumSwapA, momentumSwapY, momentumSwapD,
       attackerHadMomentum, defenderHadMomentum,
-      attackerGainedMomentum, attackerLostMomentum, defenderLostMomentum, defenderGainedMomentum,
+      attackerGainedMomentum, attackerLostMomentum, defenderLostMomentum,
       reachBonusD, statusApplied,
       isTest, isTouchSpell, testThreshold,
       testSuccess, opposedSuccess,
@@ -2669,7 +2655,6 @@
     if(t.attackerGainedMomentum) notes.push(`<b>${escapeHtml(t.attacker.name)}</b> gains Momentum.`);
     if(t.attackerLostMomentum) notes.push(`<b>${escapeHtml(t.attacker.name)}</b> loses Momentum.`);
     if(t.defenderLostMomentum) notes.push(`<b>${escapeHtml(t.defender.name)}</b> loses Momentum.`);
-    if(t.defenderGainedMomentum) notes.push(`<b>${escapeHtml(t.defender.name)}</b> gains Momentum.`);
     return notes.length ? ' ' + notes.join(' ') : '';
   }
 
